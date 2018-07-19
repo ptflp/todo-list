@@ -1,1 +1,3 @@
 app/web/node_modules
+app/vendor
+*.lock
