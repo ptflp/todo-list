@@ -16,12 +16,12 @@
 				console.log(this.oneTime);
 			}
 		},
-		editHandler: function () {
+		editHandler: function () { // обработчик двойного нажатия
 			$('.todo-list li').dblclick(function(){
 				$(this).toggleClass('editing');
 			});
 		},
-		inputHandler: function () {
+		inputHandler: function () { // обработчик снятия фокуса с поля редактирования таска
 			$(document).click(function(e) {
 			    var target = e.target;
 			    if (!$(target).is('input.edit') && !$(target).parents().is('input.edit')) {
@@ -29,7 +29,7 @@
 			    }
 			});
 		},
-		destroyHandler: function () {
+		destroyHandler: function () { // обработчик удаления таска
 			$('.destroy').on('click', function(){
 				var i =$(this).closest('li').index();
 				console.log(i);
@@ -39,7 +39,7 @@
 				todoApp.init();
 			});
 		},
-		getData: function () {
+		getData: function () { // получение данных
 			var json=localStorage.getItem("tasks");
 			tasks=JSON.parse(json);
 			console.log(tasks);
@@ -51,13 +51,13 @@
 				tasks.push(secondTask);
 			}
 		},
-		saveData: function () {
+		saveData: function () { // запись данных
 			localStorage.setItem("tasks", JSON.stringify(tasks));
 		},
-		tasksCount: function () {
+		tasksCount: function () {  //подсчет завершенных задач
 			$('.todo-count strong').html(tasks.length);
 		},
-		render: function () {
+		render: function () { // отрисовка задач
 			var docfrag = document.createDocumentFragment();
 			for (var i = 0; i < tasks.length; i++) {
 				li = document.createElement("li");
@@ -85,10 +85,10 @@
 				li.appendChild(inputT);
 				docfrag.appendChild(li);
 			}
-			while (tasksList.firstChild) {
+			while (tasksList.firstChild) { // оптимизированный путь удаления child elements
 			    tasksList.removeChild(tasksList.firstChild);
 			}
-			tasksList.appendChild(docfrag);
+			tasksList.appendChild(docfrag); // оптимизированный путь добавления dom через document fragment
 		}
 	}
 	todoApp.init();
