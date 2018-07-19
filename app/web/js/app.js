@@ -8,31 +8,41 @@
 		init: function () {
 			this.getData();
 			this.render();
-			this.removeHandler();
+			this.destroyHandler();
+			this.editHandler();
+			if (todoApp.oneTime==0) {
+				this.inputHandler();
+				this.oneTime=1;
+				console.log(this.oneTime);
+			}
+		},
+		editHandler: function () {
 			$('.todo-list li').dblclick(function(){
 				$(this).toggleClass('editing');
 			});
-			if (todoApp==0) {
-				$(document).click(function(e) {
-				    var target = e.target;
-				    if (!$(target).is('input.edit') && !$(target).parents().is('input.edit')) {
-				        $('.todo-list li').removeClass('editing');
-				    }
-				});
-			}
 		},
-		removeHandler: function () {
+		inputHandler: function () {
+			$(document).click(function(e) {
+			    var target = e.target;
+			    if (!$(target).is('input.edit') && !$(target).parents().is('input.edit')) {
+			        $('.todo-list li').removeClass('editing');
+			    }
+			});
+		},
+		destroyHandler: function () {
 			$('.destroy').on('click', function(){
 				var i =$(this).closest('li').index();
 				console.log(i);
 				tasks.splice(i,1);
 				console.log(tasks[i]);
+				todoApp.saveData();
 				todoApp.init();
 			});
-			this.saveData();
 		},
 		getData: function () {
-			tasks==localStorage.getItem("tasks");
+			var json=localStorage.getItem("tasks");
+			tasks=JSON.parse(json);
+			console.log(tasks);
 			if (tasks.length==0) {
 				tasks = [{title: 'Test',complete: false},{title: 'Test12',complete: false},{title: 'Test2',complete: false},{title: 'Test43',complete: false},{title: 'Test32',complete: false}];
 				var firstTask = {title: 'Test',complete: false};
@@ -43,6 +53,9 @@
 		},
 		saveData: function () {
 			localStorage.setItem("tasks", JSON.stringify(tasks));
+		},
+		tasksCount: function () {
+			$('.todo-count strong').html(tasks.length);
 		},
 		render: function () {
 			var docfrag = document.createDocumentFragment();
