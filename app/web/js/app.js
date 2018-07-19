@@ -2,14 +2,26 @@
 	'use strict';
 	var li,div,inputC,inputT,label,button,
 	tasksList=document.getElementsByClassName('todo-list')[0];
-	var tasks = [{title: 'Test',complete: false},{title: 'Test12',complete: false},{title: 'Test2',complete: false},{title: 'Test43',complete: false},{title: 'Test32',complete: false}];
-	var firstTask = {title: 'Test',complete: false};
-	var secondTask = {title: 'Test2',complete: true};
-	tasks.push(firstTask);
-	tasks.push(secondTask);
+	var tasks = [];
 	var todoApp = {
+		oneTime: 0,
 		init: function () {
-			todoApp.render();
+			this.getData();
+			this.render();
+			this.removeHandler();
+			$('.todo-list li').dblclick(function(){
+				$(this).toggleClass('editing');
+			});
+			if (todoApp==0) {
+				$(document).click(function(e) {
+				    var target = e.target;
+				    if (!$(target).is('input.edit') && !$(target).parents().is('input.edit')) {
+				        $('.todo-list li').removeClass('editing');
+				    }
+				});
+			}
+		},
+		removeHandler: function () {
 			$('.destroy').on('click', function(){
 				var i =$(this).closest('li').index();
 				console.log(i);
@@ -17,16 +29,20 @@
 				console.log(tasks[i]);
 				todoApp.init();
 			});
-			$('.todo-list li').dblclick(function(){
-				$(this).toggleClass('editing');
-			});
-			$(document).click(function(e) {
-			    var target = e.target;
-
-			    if (!$(target).is('input.edit') && !$(target).parents().is('input.edit')) {
-			        $('.todo-list li').removeClass('editing');
-			    }
-			});
+			this.saveData();
+		},
+		getData: function () {
+			tasks==localStorage.getItem("tasks");
+			if (tasks.length==0) {
+				tasks = [{title: 'Test',complete: false},{title: 'Test12',complete: false},{title: 'Test2',complete: false},{title: 'Test43',complete: false},{title: 'Test32',complete: false}];
+				var firstTask = {title: 'Test',complete: false};
+				var secondTask = {title: 'Test2',complete: true};
+				tasks.push(firstTask);
+				tasks.push(secondTask);
+			}
+		},
+		saveData: function () {
+			localStorage.setItem("tasks", JSON.stringify(tasks));
 		},
 		render: function () {
 			var docfrag = document.createDocumentFragment();
