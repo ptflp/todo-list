@@ -1,13 +1,34 @@
 (function (window) {
 	'use strict';
-	var tasks = [];
-	var li,div,inputC,inputT,label,button;
+	var li,div,inputC,inputT,label,button,
+	tasksList=document.getElementsByClassName('todo-list')[0];
+	var tasks = [{title: 'Test',complete: false},{title: 'Test12',complete: false},{title: 'Test2',complete: false},{title: 'Test43',complete: false},{title: 'Test32',complete: false}];
 	var firstTask = {title: 'Test',complete: false};
 	var secondTask = {title: 'Test2',complete: true};
 	tasks.push(firstTask);
 	tasks.push(secondTask);
 	var todoApp = {
-		render: function (tasksList,tasks) {
+		init: function () {
+			todoApp.render();
+			$('.destroy').on('click', function(){
+				var i =$(this).closest('li').index();
+				console.log(i);
+				tasks.splice(i,1);
+				console.log(tasks[i]);
+				todoApp.init();
+			});
+			$('.todo-list li').dblclick(function(){
+				$(this).toggleClass('editing');
+			});
+			$(document).click(function(e) {
+			    var target = e.target;
+
+			    if (!$(target).is('input.edit') && !$(target).parents().is('input.edit')) {
+			        $('.todo-list li').removeClass('editing');
+			    }
+			});
+		},
+		render: function () {
 			var docfrag = document.createDocumentFragment();
 			for (var i = 0; i < tasks.length; i++) {
 				li = document.createElement("li");
@@ -41,21 +62,7 @@
 			tasksList.appendChild(docfrag);
 		}
 	}
-
-	var tasksList=document.getElementsByClassName('todo-list');
-	tasksList=tasksList[0];
-	todoApp.render(tasksList,tasks);
-
-	$('.todo-list li').dblclick(function(){
-		$(this).toggleClass('editing');
-	});
-	$(document).click(function(e) {
-	    var target = e.target;
-
-	    if (!$(target).is('input.edit') && !$(target).parents().is('input.edit')) {
-	        $('.todo-list li').removeClass('editing');
-	    }
-	});
+	todoApp.init();
 	// Your starting point. Enjoy the ride!
 
 })(window);
