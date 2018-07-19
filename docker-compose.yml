@@ -1,13 +1,20 @@
 version: "2"
 services:
   app:
-    image: php:7.2.7-apache-stretch
+    image: ptflp/yii2-basic-app
     container_name: app
     restart: always
     volumes:
       - ./app:/var/www/
     ports:
       - 8000:80
+  frontend:
+    image: node:9-alpine
+    container_name: frontend
+    working_dir: /app
+    volumes:
+      - ./app/web:/app
+    command: npm install
   appdb:
     image: mariadb
     container_name: appdb
