@@ -6,6 +6,8 @@ services:
     restart: always
     volumes:
       - ./app:/var/www/
+    networks:
+      - skynet
     ports:
       - 8000:80
   frontend:
