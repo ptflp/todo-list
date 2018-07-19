@@ -1,0 +1,39 @@
+version: "2"
+services:
+  app:
+    image: php:7.2.7-apache-stretch
+    container_name: app
+    restart: always
+    volumes:
+      - ./app:/var/www/
+    ports:
+      - 8000:80
+  appdb:
+    image: mariadb
+    container_name: appdb
+    restart: always
+    env_file:
+      - ./mysql/mysql.env
+    networks:
+      - skynet
+    volumes:
+      - "appdb:/var/lib/mysql"
+  myadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: myadmin
+    restart: always
+    ports:
+      - 8081:80
+    networks:
+      - skynet
+    volumes:
+      - "./myadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php"
+      - "./myadmin/config.inc.php:/etc/phpmyadmin/config.inc.php"
+networks:
+  skynet:
+    external:
+      name: skynet
+volumes:
+  appdb:
+    external:
+      name: appdb
