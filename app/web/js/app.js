@@ -6,20 +6,24 @@
 	var todoApp = {
 		oneTime: 0,
 		init: function () { // инициализация
-			this.removeIf();
 			this.getData();
 			this.render();
 			this.tasksCount();
-			this.destroyHandler();
-			this.editHandler();
-			this.checkHandler();
+			this.initHandlers();
 			if (todoApp.oneTime==0) {
+				this.removeIf();
+				this.filterHandler();
 				this.clearHandler();
 				this.addHandler();
 				this.inputHandler();
 				this.oneTime=1;
 			}
 			console.log('initialization');
+		},
+		initHandlers: function () {
+			this.destroyHandler();
+			this.editHandler();
+			this.checkHandler();
 		},
 		removeIf: function () {
 			Array.prototype.removeIf = function(callback) {
@@ -43,6 +47,15 @@
 				todoApp.init();
 			});
 		},
+		filterHandler: function () {
+			$('.filters li a').on('click',function () {
+				$('.filters li a').removeClass('selected');
+				$(this).addClass('selected');
+				let href = $(this).attr('href');
+				todoApp.render(href);
+				todoApp.initHandlers();
+			});
+		},
 		checkHandler: function () {
 			$('input.toggle').on('click', function(){
 				var liTemp = $(this).closest('li');
@@ -54,7 +67,6 @@
 				    tasks[i].complete = false;
 					todoApp.saveData();
 					todoApp.tasksCount();
-					console.log(liTemp);
 					liTemp.removeClass('completed');
 				    break;
 
@@ -62,7 +74,6 @@
 				    tasks[i].complete = true;
 					todoApp.saveData();
 					todoApp.tasksCount();
-					console.log(liTemp);
 					liTemp.addClass('completed');
 				    break;
 
@@ -138,14 +149,16 @@
 			}
 			$('.todo-count strong').html(count);
 		},
-		render: function () { // отрисовка задач
+		render: function (hash=false) { // отрисовка задач
 			if (tasks.length>0) {
 				let tasksTemp=[];
 				if(window.location.hash) {
-				  var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
-				  console.log(hash);
-				  switch (hash) {
-					  case '/active':
+					if (!hash) {
+						hash ='#' + window.location.hash.substring(1);
+					}
+					console.log(hash);
+					switch (hash) {
+					  case '#/active':
 						for (var i = 0; i < tasks.length; i++) {
 							if (tasks[i].complete!==true) {
 								let item = tasks[i];
@@ -154,7 +167,7 @@
 							}
 						}
 					    break;
-					  case '/completed':
+					  case '#/completed':
 						for (var i = 0; i < tasks.length; i++) {
 							if (tasks[i].complete==true) {
 								let item = tasks[i];
