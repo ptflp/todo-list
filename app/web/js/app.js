@@ -47,11 +47,14 @@
 			$('input.toggle').on('click', function(){
 				var liTemp = $(this).closest('li');
 				var i = $(this).closest('li').data('id');
+				console.log(i);
+				console.log(tasks[i]);
 				switch(tasks[i].complete) {
 				  case true:  // if (x === 'value1')
 				    tasks[i].complete = false;
 					todoApp.saveData();
 					todoApp.tasksCount();
+					console.log(liTemp);
 					liTemp.removeClass('completed');
 				    break;
 
@@ -59,6 +62,7 @@
 				    tasks[i].complete = true;
 					todoApp.saveData();
 					todoApp.tasksCount();
+					console.log(liTemp);
 					liTemp.addClass('completed');
 				    break;
 
@@ -144,14 +148,18 @@
 					  case '/active':
 						for (var i = 0; i < tasks.length; i++) {
 							if (tasks[i].complete!==true) {
-								tasksTemp.push(tasks[i]);
+								let item = tasks[i];
+								item.id = i;
+								tasksTemp.push(item);
 							}
 						}
 					    break;
 					  case '/completed':
 						for (var i = 0; i < tasks.length; i++) {
 							if (tasks[i].complete==true) {
-								tasksTemp.push(tasks[i]);
+								let item = tasks[i];
+								item.id = i;
+								tasksTemp.push(item);
 							}
 						}
 					    //Инструкции, соответствующие ''
@@ -166,7 +174,7 @@
 				var docfrag = document.createDocumentFragment();
 				for (var i = 0; i < tasksTemp.length; i++) {
 					li = document.createElement("li");
-					li.setAttribute("data-id", i);
+					li.setAttribute("data-id", tasksTemp[i].id);
 					div = document.createElement("div");
 					div.className = "view";
 
