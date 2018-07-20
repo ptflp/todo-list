@@ -99,8 +99,9 @@
 		},
 		getData: function () { // получение данных
 			var json=localStorage.getItem("tasks");
-			console.log(json);
-			tasks=JSON.parse(json);
+			if (json) {
+				tasks=JSON.parse(json);
+			}
 			if (tasks.length==0) {
 				// tasks = [{title: 'Test',complete: false},{title: 'Test12',complete: false},{title: 'Test2',complete: false},{title: 'Test43',complete: false},{title: 'Test32',complete: false}];
 				// let firstTask = {title: 'Test',complete: false};
@@ -179,7 +180,6 @@
 			}
 		}
 	}
-
 	todoApp.init();
 	// Your starting point. Enjoy the ride!
 
