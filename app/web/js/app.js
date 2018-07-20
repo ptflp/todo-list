@@ -14,8 +14,8 @@
 			this.destroyHandler();
 			this.editHandler();
 			this.checkHandler();
-			this.clearHandler();
 			if (todoApp.oneTime==0) {
+				this.clearHandler();
 				this.addHandler();
 				this.inputHandler();
 				this.oneTime=1;
@@ -40,6 +40,7 @@
 				tasks.removeIf( function(item, idx) {
 				    return item.complete == true;
 				});
+				todoApp.saveData();
 				todoApp.init();
 			});
 		},
@@ -92,7 +93,6 @@
 			$('.destroy').on('click', function(){
 				let i =$(this).closest('li').data('id');
 				tasks.splice(i,1);
-				console.log(tasks[i]);
 				todoApp.saveData();
 				todoApp.init();
 			});
@@ -132,11 +132,28 @@
 					tasksC.push(tasks[i]);
 				}
 			}
-			console.log(tasksC);
 			$('.todo-count strong').html(tasks.length-tasksC.length);
 		},
 		render: function () { // отрисовка задач
 			if (tasks.length>0) {
+				if(window.location.hash) {
+				  var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+				  console.log(hash);
+				  switch (hash) {
+					  case '/active':
+					    console.log('ololo');
+					    break;
+					  case '/completed':
+					    //Инструкции, соответствующие ''
+					    break;
+					  default:
+					    //Здесь находятся инструкции, которые выполняются при отсутствии соответствующего значения
+					    //statements_def
+					    break;
+					}
+				} else {
+				  // No hash found
+				}
 				var docfrag = document.createDocumentFragment();
 				for (var i = 0; i < tasks.length; i++) {
 					li = document.createElement("li");
