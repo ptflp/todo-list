@@ -14,12 +14,14 @@
 			this.editHandler();
 			this.checkHandler();
 			if (todoApp.oneTime==0) {
+				this.addHandler();
 				this.inputHandler();
 				this.oneTime=1;
 			}
+			console.log('initialization');
 		},
 		checkHandler: function () {
-			$('input').on('click', function(){
+			$('input.toggle').on('click', function(){
 				var liTemp = $(this).closest('li');
 				var i = liTemp.index();
 				switch(tasks[i].complete) {
@@ -51,7 +53,6 @@
 			});
 			$( "input.edit" ).change(function() {
 				let val = $(this).val();
-				console.log(f);
 				tasks[i].title=val;
 				todoApp.saveData();
 			});
@@ -75,18 +76,28 @@
 		},
 		getData: function () { // получение данных
 			var json=localStorage.getItem("tasks");
+			console.log(json);
 			tasks=JSON.parse(json);
-			console.log(tasks);
 			if (tasks.length==0) {
-				tasks = [{title: 'Test',complete: false},{title: 'Test12',complete: false},{title: 'Test2',complete: false},{title: 'Test43',complete: false},{title: 'Test32',complete: false}];
-				let firstTask = {title: 'Test',complete: false};
-				let secondTask = {title: 'Test2',complete: true};
-				tasks.push(firstTask);
-				tasks.push(secondTask);
+				// tasks = [{title: 'Test',complete: false},{title: 'Test12',complete: false},{title: 'Test2',complete: false},{title: 'Test43',complete: false},{title: 'Test32',complete: false}];
+				// let firstTask = {title: 'Test',complete: false};
+				// let secondTask = {title: 'Test2',complete: true};
+				// tasks.push(firstTask);
+				// tasks.push(secondTask);
 			}
 		},
 		saveData: function () { // запись данных
 			localStorage.setItem("tasks", JSON.stringify(tasks));
+		},
+		addHandler: function () {
+			$(".new-todo").on('keyup', function (e) {
+			    if (e.keyCode == 13) {
+			        let task = {title: $(this).val(), complete:false};
+			        tasks.push(task);
+			        todoApp.saveData();
+			        todoApp.init();
+			    }
+			});
 		},
 		tasksCount: function () {  //подсчет завершенных задач
 			tasksC=[];
@@ -99,43 +110,49 @@
 			$('.todo-count strong').html(tasks.length-tasksC.length);
 		},
 		render: function () { // отрисовка задач
-			var docfrag = document.createDocumentFragment();
-			for (var i = 0; i < tasks.length; i++) {
-				li = document.createElement("li");
-				div = document.createElement("div");
-				div.className = "view";
+			if (tasks.length>0) {
+				var docfrag = document.createDocumentFragment();
+				for (var i = 0; i < tasks.length; i++) {
+					li = document.createElement("li");
+					div = document.createElement("div");
+					div.className = "view";
 
-				inputC = document.createElement("input");
-				inputC.className = "toggle";
-				inputC.type = "checkbox";
+					inputC = document.createElement("input");
+					inputC.className = "toggle";
+					inputC.type = "checkbox";
 
-				inputT = document.createElement("input");
-				inputT.className = "edit";
-				inputT.type = "text";
-				inputT.value = tasks[i].title;
+					inputT = document.createElement("input");
+					inputT.className = "edit";
+					inputT.type = "text";
+					inputT.value = tasks[i].title;
 
-				label = document.createElement("label");
-				label.textContent=tasks[i].title;
+					label = document.createElement("label");
+					label.textContent=tasks[i].title;
 
-				button = document.createElement("button");
-				button.className = "destroy";
+					button = document.createElement("button");
+					button.className = "destroy";
 
-				if (tasks[i].complete==true) {
-					li.className="completed";
-					inputC.checked = true;
+					if (tasks[i].complete==true) {
+						li.className="completed";
+						inputC.checked = true;
+					}
+
+					div.appendChild(inputC);
+					div.appendChild(label);
+					div.appendChild(button);
+					li.appendChild(div);
+					li.appendChild(inputT);
+					docfrag.appendChild(li);
 				}
-
-				div.appendChild(inputC);
-				div.appendChild(label);
-				div.appendChild(button);
-				li.appendChild(div);
-				li.appendChild(inputT);
-				docfrag.appendChild(li);
+				while (tasksList.firstChild) { // оптимизированный путь удаления child elements
+				    tasksList.removeChild(tasksList.firstChild);
+				}
+				tasksList.appendChild(docfrag); // оптимизированный путь добавления dom через document fragment
+			} else {
+				while (tasksList.firstChild) { // оптимизированный путь удаления child elements
+				    tasksList.removeChild(tasksList.firstChild);
+				}
 			}
-			while (tasksList.firstChild) { // оптимизированный путь удаления child elements
-			    tasksList.removeChild(tasksList.firstChild);
-			}
-			tasksList.appendChild(docfrag); // оптимизированный путь добавления dom через document fragment
 		}
 	}
 
