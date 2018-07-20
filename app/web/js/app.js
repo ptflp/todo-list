@@ -66,15 +66,13 @@
 				  case true:  // if (x === 'value1')
 				    tasks[i].complete = false;
 					todoApp.saveData();
-					todoApp.tasksCount();
-					liTemp.removeClass('completed');
+					todoApp.init();
 				    break;
 
 				  case false:  // if (x === 'value2')
 				    tasks[i].complete = true;
 					todoApp.saveData();
-					todoApp.tasksCount();
-					liTemp.addClass('completed');
+					todoApp.init();
 				    break;
 
 				  default:
