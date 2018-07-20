@@ -7,18 +7,41 @@
 	var todoApp = {
 		oneTime: 0,
 		init: function () { // инициализация
+			this.removeIf();
 			this.getData();
 			this.render();
 			this.tasksCount();
 			this.destroyHandler();
 			this.editHandler();
 			this.checkHandler();
+			this.clearHandler();
 			if (todoApp.oneTime==0) {
 				this.addHandler();
 				this.inputHandler();
 				this.oneTime=1;
 			}
 			console.log('initialization');
+		},
+		removeIf: function () {
+			Array.prototype.removeIf = function(callback) {
+			    var i = 0;
+			    while (i < this.length) {
+			        if (callback(this[i])) {
+			            this.splice(i, 1);
+			        }
+			        else {
+			            ++i;
+			        }
+			    }
+			};
+		},
+		clearHandler: function () {
+			$('.clear-completed').on('click', function () {
+				tasks.removeIf( function(item, idx) {
+				    return item.complete == true;
+				});
+				todoApp.init();
+			});
 		},
 		checkHandler: function () {
 			$('input.toggle').on('click', function(){
@@ -93,6 +116,7 @@
 			$(".new-todo").on('keyup', function (e) {
 			    if (e.keyCode == 13) {
 			        let task = {title: $(this).val(), complete:false};
+			        $(this).val('');
 			        tasks.push(task);
 			        todoApp.saveData();
 			        todoApp.init();
