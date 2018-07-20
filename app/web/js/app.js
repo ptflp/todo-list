@@ -85,12 +85,15 @@
 			let i;
 			$('.todo-list li').dblclick(function(){
 				$(this).toggleClass('editing');
-				i=$(this).index();
+				i=$(this).data('id');
 			});
 			$( "input.edit" ).change(function() {
 				let val = $(this).val();
-				tasks[i].title=val;
-				todoApp.saveData();
+				if(val.length>2){
+					tasks[i].title=val;
+					todoApp.saveData();
+					todoApp.init();
+				}
 			});
 		},
 		inputHandler: function () { // обработчик снятия фокуса с поля редактирования таска
