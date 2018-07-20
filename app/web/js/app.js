@@ -3,7 +3,6 @@
 	var li,div,inputC,inputT,label,button,
 	tasksList=document.getElementsByClassName('todo-list')[0];
 	var tasks = [];
-	var tasksC= [];
 	var todoApp = {
 		oneTime: 0,
 		init: function () { // инициализация
@@ -47,7 +46,7 @@
 		checkHandler: function () {
 			$('input.toggle').on('click', function(){
 				var liTemp = $(this).closest('li');
-				var i = liTemp.index();
+				var i = $(this).closest('li').data('id');
 				switch(tasks[i].complete) {
 				  case true:  // if (x === 'value1')
 				    tasks[i].complete = false;
@@ -126,36 +125,46 @@
 			});
 		},
 		tasksCount: function () {  //подсчет завершенных задач
-			tasksC=[];
+			let count = 0;
 			for (var i = 0; i < tasks.length; i++) {
+				count++;
 				if (tasks[i].complete==true) {
-					tasksC.push(tasks[i]);
+					count--;
 				}
 			}
-			$('.todo-count strong').html(tasks.length-tasksC.length);
+			$('.todo-count strong').html(count);
 		},
 		render: function () { // отрисовка задач
 			if (tasks.length>0) {
+				let tasksTemp=[];
 				if(window.location.hash) {
 				  var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
 				  console.log(hash);
 				  switch (hash) {
 					  case '/active':
-					    console.log('ololo');
+						for (var i = 0; i < tasks.length; i++) {
+							if (tasks[i].complete!==true) {
+								tasksTemp.push(tasks[i]);
+							}
+						}
 					    break;
 					  case '/completed':
+						for (var i = 0; i < tasks.length; i++) {
+							if (tasks[i].complete==true) {
+								tasksTemp.push(tasks[i]);
+							}
+						}
 					    //Инструкции, соответствующие ''
 					    break;
 					  default:
-					    //Здесь находятся инструкции, которые выполняются при отсутствии соответствующего значения
-					    //statements_def
+					    tasksTemp=tasks;
 					    break;
 					}
 				} else {
-				  // No hash found
+					tasksTemp=tasks;
 				}
 				var docfrag = document.createDocumentFragment();
-				for (var i = 0; i < tasks.length; i++) {
+				for (var i = 0; i < tasksTemp.length; i++) {
 					li = document.createElement("li");
 					li.setAttribute("data-id", i);
 					div = document.createElement("div");
@@ -168,15 +177,15 @@
 					inputT = document.createElement("input");
 					inputT.className = "edit";
 					inputT.type = "text";
-					inputT.value = tasks[i].title;
+					inputT.value = tasksTemp[i].title;
 
 					label = document.createElement("label");
-					label.textContent=tasks[i].title;
+					label.textContent=tasksTemp[i].title;
 
 					button = document.createElement("button");
 					button.className = "destroy";
 
-					if (tasks[i].complete==true) {
+					if (tasksTemp[i].complete==true) {
 						li.className="completed";
 						inputC.checked = true;
 					}
