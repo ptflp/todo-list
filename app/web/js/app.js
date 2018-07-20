@@ -90,7 +90,7 @@
 		},
 		destroyHandler: function () { // обработчик удаления таска
 			$('.destroy').on('click', function(){
-				let i =$(this).closest('li').index();
+				let i =$(this).closest('li').data('id');
 				tasks.splice(i,1);
 				console.log(tasks[i]);
 				todoApp.saveData();
@@ -115,8 +115,9 @@
 		},
 		addHandler: function () {
 			$(".new-todo").on('keyup', function (e) {
-			    if (e.keyCode == 13) {
-			        let task = {title: $(this).val(), complete:false};
+				let val = $(this).val();
+			    if (e.keyCode == 13 && val.length>2) {
+			        let task = {title: val, complete:false};
 			        $(this).val('');
 			        tasks.push(task);
 			        todoApp.saveData();
@@ -139,6 +140,7 @@
 				var docfrag = document.createDocumentFragment();
 				for (var i = 0; i < tasks.length; i++) {
 					li = document.createElement("li");
+					li.setAttribute("data-id", i);
 					div = document.createElement("div");
 					div.className = "view";
 
