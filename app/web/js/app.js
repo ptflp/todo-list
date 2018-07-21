@@ -165,6 +165,10 @@
 			}
 			$('.todo-count strong').html(count);
 		},
+		filterActive: function(hash){
+			$('.filters li a').removeClass('selected');
+			$('a[href$="'+hash+'"]').addClass('selected');
+		},
 		render: function (hash=false) { // отрисовка задач
 			if (tasks.length>0) {
 				let tasksTemp=[];
@@ -175,6 +179,7 @@
 					console.log(hash);
 					switch (hash) {
 					  case '#/active':
+					  	todoApp.filterActive(hash);
 						for (var i = 0; i < tasks.length; i++) {
 							if (tasks[i].complete!==true) {
 								let item = tasks[i];
@@ -183,6 +188,7 @@
 						}
 					    break;
 					  case '#/completed':
+					  	todoApp.filterActive(hash);
 						for (var i = 0; i < tasks.length; i++) {
 							if (tasks[i].complete==true) {
 								let item = tasks[i];
