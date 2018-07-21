@@ -82,17 +82,21 @@
 			});
 		},
 		editHandler: function () { // обработчик двойного нажатия
-			let i;
+			let id;
 			$('.todo-list li').dblclick(function(){
 				$(this).toggleClass('editing');
-				i=$(this).data('id');
+				id=$(this).data('id');
 			});
 			$( "input.edit" ).change(function() {
 				let val = $(this).val();
 				if(val.length>2){
-					tasks[i].title=val;
-					todoApp.saveData();
-					todoApp.init();
+					for (var i = 0; i < tasks.length; i++) {
+						if (tasks[i].id==id) {
+							tasks[i].title=val;
+							todoApp.saveData();
+							todoApp.init();
+						}
+					}
 				}
 			});
 		},
