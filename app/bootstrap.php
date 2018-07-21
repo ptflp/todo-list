@@ -1,25 +1,20 @@
 <?php
-// bootstrap.php
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
-
 require_once "vendor/autoload.php";
 
-// Create a simple "default" Doctrine ORM configuration for Annotations
-$isDevMode = true;
-$config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src"), $isDevMode);
-// or if you prefer yaml or XML
-//$config = Setup::createXMLMetadataConfiguration(array(__DIR__."/config/xml"), $isDevMode);
-//$config = Setup::createYAMLMetadataConfiguration(array(__DIR__."/config/yaml"), $isDevMode);
-
-// database configuration parameters
-$conn = array(
-    'driver'   => 'pdo_mysql',
-    'host'     => 'appdb',
-    'dbname'   => 'appdb',
-    'user'     => 'root',
-    'password' => 'root'
+// Setup Doctrine
+$configuration = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
+    $paths = [__DIR__ . '/entities'],
+    $isDevMode = true
 );
 
-// obtaining the entity manager
-$entityManager = EntityManager::create($conn, $config);
+// Setup connection parameters
+$connection_parameters = [
+    'dbname' => 'appdb',
+    'user' => 'root',
+    'password' => 'root',
+    'host' => 'appdb',
+    'driver' => 'pdo_mysql'
+];
+
+// Get the entity manager
+$entity_manager = Doctrine\ORM\EntityManager::create($connection_parameters, $configuration);
