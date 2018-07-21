@@ -5,7 +5,7 @@
 	var tasks = [];
 	var todoApp = {
 		oneTime: 0,
-		init: function () { // инициализация
+		init: function () { // инициализация движка / engine initialization
 			this.getData();
 			this.render();
 			this.tasksCount();
@@ -18,17 +18,17 @@
 				this.inputHandler();
 				this.oneTime=1;
 			}
-			console.log('initialization');
+			console.log('initialization complete');
 		},
-		initHandlers: function () {
+		initHandlers: function () { // все хэндлеры онклик и ончэндж / on change on click handlers
 			this.destroyHandler();
 			this.editHandler();
 			this.checkHandler();
 		},
-		getRandomInt: function (min, max) {
+		getRandomInt: function (min, max) { // генератор псевдо случайных чисел / randomizer
 			  return Math.floor(Math.random() * (max - min)) + min;
 		},
-		removeIf: function () {
+		removeIf: function () { // вспомогательная функция для array / array helper for removing by condition
 			Array.prototype.removeIf = function(callback) {
 			    var i = 0;
 			    while (i < this.length) {
@@ -41,9 +41,8 @@
 			    }
 			};
 		},
-		clearHandler: function () {
+		clearHandler: function () { // очищение завершенных задач по нажатию / clear tasks on click "Clear completed"
 			$('.clear-completed').on('click', function () {
-				console.log(tasks);
 				tasks.removeIf( function(item, idx) {
 				    return item.complete == true;
 				});
@@ -51,7 +50,7 @@
 				todoApp.init();
 			});
 		},
-		filterHandler: function () {
+		filterHandler: function () { // выделение активной ссылки по нажатию / activate on click link in filter area
 			$('.filters li a').on('click',function () {
 				$('.filters li a').removeClass('selected');
 				$(this).addClass('selected');
@@ -60,9 +59,8 @@
 				todoApp.initHandlers();
 			});
 		},
-		checkHandler: function () {
+		checkHandler: function () { // обработчик чекбокса / checkbox handler
 			$('input.toggle').on('click', function(){
-				console.log(tasks);
 				var liTemp = $(this).closest('li');
 				var id = $(this).closest('li').data('id');
 				for (var i = 0; i < tasks.length; i++) {
@@ -141,7 +139,7 @@
 		saveData: function () { // запись данных
 			localStorage.setItem("tasks", JSON.stringify(tasks));
 		},
-		addHandler: function () {
+		addHandler: function () { // обработчик добавления задачи по нажатию enter /  add task handler on press enter
 			$(".new-todo").on('keyup', function (e) {
 				let val = $(this).val();
 				let collision = todoApp.getRandomInt(111,1000);
@@ -155,7 +153,7 @@
 			    }
 			});
 		},
-		tasksCount: function () {  //подсчет завершенных задач
+		tasksCount: function () {  // подсчет завершенных задач
 			let count = 0;
 			for (var i = 0; i < tasks.length; i++) {
 				count++;
@@ -165,7 +163,7 @@
 			}
 			$('.todo-count strong').html(count);
 		},
-		filterActive: function(hash){
+		filterActive: function(hash){ // выделение активной ссылки по hash URL
 			$('.filters li a').removeClass('selected');
 			$('a[href$="'+hash+'"]').addClass('selected');
 		},
@@ -176,9 +174,8 @@
 					if (!hash) {
 						hash ='#' + window.location.hash.substring(1);
 					}
-					console.log(hash);
-					switch (hash) {
-					  case '#/active':
+					switch (hash) { // отрисовка по фильтру
+					  case '#/active':   // активные
 					  	todoApp.filterActive(hash);
 						for (var i = 0; i < tasks.length; i++) {
 							if (tasks[i].complete!==true) {
@@ -187,7 +184,7 @@
 							}
 						}
 					    break;
-					  case '#/completed':
+					  case '#/completed':   // завершенные
 					  	todoApp.filterActive(hash);
 						for (var i = 0; i < tasks.length; i++) {
 							if (tasks[i].complete==true) {
@@ -195,7 +192,6 @@
 								tasksTemp.push(item);
 							}
 						}
-					    //Инструкции, соответствующие ''
 					    break;
 					  default:
 					    tasksTemp=tasks;
@@ -205,7 +201,7 @@
 					tasksTemp=tasks;
 				}
 				var docfrag = document.createDocumentFragment();
-				for (var i = 0; i < tasksTemp.length; i++) {
+				for (var i = 0; i < tasksTemp.length; i++) { // создание DOM элементов из массива / DOM elements creator from array
 					li = document.createElement("li");
 					li.setAttribute("data-id", tasksTemp[i].id);
 					div = document.createElement("div");
