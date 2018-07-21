@@ -25,6 +25,9 @@
 			this.editHandler();
 			this.checkHandler();
 		},
+		getRandomInt: function (min, max) {
+			  return Math.floor(Math.random() * (max - min)) + min;
+		},
 		removeIf: function () {
 			Array.prototype.removeIf = function(callback) {
 			    var i = 0;
@@ -40,6 +43,7 @@
 		},
 		clearHandler: function () {
 			$('.clear-completed').on('click', function () {
+				console.log(tasks);
 				tasks.removeIf( function(item, idx) {
 				    return item.complete == true;
 				});
@@ -58,26 +62,29 @@
 		},
 		checkHandler: function () {
 			$('input.toggle').on('click', function(){
+				console.log(tasks);
 				var liTemp = $(this).closest('li');
-				var i = $(this).closest('li').data('id');
-				console.log(i);
-				console.log(tasks[i]);
-				switch(tasks[i].complete) {
-				  case true:  // if (x === 'value1')
-				    tasks[i].complete = false;
-					todoApp.saveData();
-					todoApp.init();
-				    break;
+				var id = $(this).closest('li').data('id');
+				for (var i = 0; i < tasks.length; i++) {
+					if (tasks[i].id==id) {
+						switch(tasks[i].complete) {
+						  case true:  // if (x === 'value1')
+						    tasks[i].complete = false;
+							todoApp.saveData();
+							todoApp.init();
+						    break;
 
-				  case false:  // if (x === 'value2')
-				    tasks[i].complete = true;
-					todoApp.saveData();
-					todoApp.init();
-				    break;
+						  case false:  // if (x === 'value2')
+						    tasks[i].complete = true;
+							todoApp.saveData();
+							todoApp.init();
+						    break;
 
-				  default:
-				    console.log('error checkHandler');
-				    break;
+						  default:
+						    console.log('error checkHandler');
+						    break;
+						}
+					}
 				}
 			});
 		},
@@ -137,8 +144,10 @@
 		addHandler: function () {
 			$(".new-todo").on('keyup', function (e) {
 				let val = $(this).val();
+				let collision = todoApp.getRandomInt(111,1000);
 			    if (e.keyCode == 13 && val.length>2) {
-			        let task = {title: val, complete:false};
+			    	let id = new Date().getTime() + '-' + collision;
+			        let task = {title: val, complete:false, id: id};
 			        $(this).val('');
 			        tasks.push(task);
 			        todoApp.saveData();
@@ -169,7 +178,6 @@
 						for (var i = 0; i < tasks.length; i++) {
 							if (tasks[i].complete!==true) {
 								let item = tasks[i];
-								item.id = i;
 								tasksTemp.push(item);
 							}
 						}
@@ -178,7 +186,6 @@
 						for (var i = 0; i < tasks.length; i++) {
 							if (tasks[i].complete==true) {
 								let item = tasks[i];
-								item.id = i;
 								tasksTemp.push(item);
 							}
 						}
