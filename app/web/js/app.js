@@ -110,8 +110,10 @@
 		},
 		destroyHandler: function () { // обработчик удаления таска
 			$('.destroy').on('click', function(){
-				let i =$(this).closest('li').data('id');
-				tasks.splice(i,1);
+				let id =$(this).closest('li').data('id');
+				tasks.removeIf( function(item, idx) {
+				    return item.id == id;
+				});
 				todoApp.saveData();
 				todoApp.init();
 			});
