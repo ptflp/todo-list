@@ -10,6 +10,8 @@ switch (REQURL[1]) {
 				$error['error']='Неправильная пара логин пароль';
 				echo json_encode($error,JSON_UNESCAPED_UNICODE);
 			}
+		} else {
+			include('../view/login.html');
 		}
 	break;
 	case 'logout':
