@@ -6,6 +6,8 @@ switch (REQURL[1]) {
 			$auth=$user->auth($_REQUEST['email'],$_REQUEST['password']);
 			if ($auth) {
 				$user->authorize($user->id);
+				$success['success']='1';
+				echo json_encode($success,JSON_UNESCAPED_UNICODE);
 			} else {
 				$error['error']='Неправильная пара логин пароль';
 				echo json_encode($error,JSON_UNESCAPED_UNICODE);
@@ -26,11 +28,13 @@ switch (REQURL[1]) {
 			$user= new User();
 			if ($user->register($_REQUEST['email'],$_REQUEST['password'])) {
 				$userN=$entity_manager->getRepository('entities\User')->findOneBy(['email' => $_REQUEST['email']]);
-					$user->authorize($userN->getId());
+				$user->authorize($userN->getId());
 			} else {
 				$error['error']='данный пользователь уже существует: '.$_REQUEST['email'];
 				echo json_encode($error,JSON_UNESCAPED_UNICODE);
 			}
+		} else {
+			include('../view/register.html');
 		}
 	break;
 
