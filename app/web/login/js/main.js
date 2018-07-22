@@ -13,10 +13,10 @@
             else {
                 $(this).removeClass('has-val');
             }
-        })    
+        })
     })
-  
-  
+
+
     /*==================================================================
     [ Validate ]*/
     var input = $('.validate-input .input100');
@@ -40,6 +40,30 @@
            hideValidate(this);
         });
     });
+    function isset () {
+        // +   original by: Kevin van Zonneveld
+        // +   improved by: FremyCompany
+        // +   improved by: Onno Marsman
+        // *     example 1: isset( undefined, true);
+        // *     returns 1: false
+        // *     example 2: isset( 'Kevin van Zonneveld' );
+        // *     returns 2: true
+
+        var a=arguments, l=a.length, i=0;
+
+        if (l===0) {
+            throw new Error('Empty isset');
+        }
+
+        while (i!==l) {
+            if (typeof(a[i])=='undefined' || a[i]===null) {
+                return false;
+            } else {
+                i++;
+            }
+        }
+        return true;
+    }
 
     function validate (input) {
         if($(input).attr('type') == 'email' || $(input).attr('name') == 'email') {
@@ -65,7 +89,7 @@
 
         $(thisAlert).removeClass('alert-validate');
     }
-    
+
     /*==================================================================
     [ Show pass ]*/
     var showPass = 0;
@@ -80,7 +104,36 @@
             $(this).removeClass('active');
             showPass = 0;
         }
-        
+
+    });
+    $('#login').on('submit',function(e) {
+        e.preventDefault();
+        var datastring = $(this).serialize();
+        console.log(datastring);
+        $.ajax({
+            type: "POST",
+            url: "/user/login",
+            data: datastring,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                switch(data.success) {
+                  case "0":
+                    swal("Error!", data.error, "error");
+                    break;
+                  case "1":
+                    swal("Success!", 'authorization successfull', "success");
+                    setTimeout(function () {
+                        window.location.replace("/");
+                        window.location.href = "/";
+                    },1500);
+                    break;
+                }
+            },
+            error: function() {
+                alert('error handing here');
+            }
+        });
     });
 
 
