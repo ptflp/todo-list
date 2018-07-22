@@ -135,6 +135,35 @@
             }
         });
     });
+    $('#register').on('submit',function(e) {
+        e.preventDefault();
+        var datastring = $(this).serialize();
+        console.log(datastring);
+        $.ajax({
+            type: "POST",
+            url: "/user/register",
+            data: datastring,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+                switch(data.success) {
+                  case "0":
+                    swal("Error!", data.error, "error");
+                    break;
+                  case "1":
+                    swal("Success!", 'registration successfull', "success");
+                    setTimeout(function () {
+                        window.location.replace("/");
+                        window.location.href = "/";
+                    },1500);
+                    break;
+                }
+            },
+            error: function() {
+                alert('error handing here');
+            }
+        });
+    });
 
 
 })(jQuery);

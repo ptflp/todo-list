@@ -31,6 +31,7 @@ switch (REQURL[1]) {
 				$userN=$entity_manager->getRepository('entities\User')->findOneBy(['email' => $_REQUEST['email']]);
 				$user->authorize($userN->getId());
 				$msg['success']='1';
+				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			} else {
 				$msg['success']='0';
 				$msg['error']='данный пользователь уже существует: '.$_REQUEST['email'];
