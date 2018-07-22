@@ -11,21 +11,24 @@ if(!empty(REQURL[1])) {
 					echo 'Неправильная пара логин пароль';
 				}
 			}
-			if (!empty($_SESSION['uid'])) {
-				header('location: /');
-			}
 		break;
 		case 'logout':
 			session_destroy();
 			header('location: /user/login');
 		break;
 		case 'register':
-			echo $_SESSION['uid'];
+			if (!empty($_SESSION['uid'])) {
+				header('location: /');
+			}
 			if (isset($_GET['email']) && isset($_GET['password'])) {
 				$user= new User();
-				$user->register($_GET['email'],$_GET['password']);
- 				$userN=$entity_manager->getRepository('entities\User')->findOneBy(['email' => $_GET['email']]);
- 				$user->authorize($userN->getId());
+				if ($user->register($_GET['email'],$_GET['password'])) {
+					$userN=$entity_manager->getRepository('entities\User')->findOneBy(['email' => $_GET['email']]);
+ 					$user->authorize($userN->getId());
+				} else {
+					$error['error']='данный пользователь уже существует: '.$_GET['email'];
+					echo json_encode($error,JSON_UNESCAPED_UNICODE);
+				}
 			}
 		break;
 

@@ -34,17 +34,27 @@
  	}
  	public function register($login,$password)
  	{
- 		$options = [
-		    'cost' => 10
-		];
-		$hash=password_hash($password, PASSWORD_DEFAULT,$options);
-		$user = (new entities\User())
-		    ->setEmail($login)
-		    ->setPassword($hash);
-		// $user = $entity_manager->getRepository('entities\User')->findOneBy(['id' => 2]);
-		$this->entity_manager->persist($user);
-		// Finally flush and execute the database transaction
-		$this->entity_manager->flush();
+ 		if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+	 		try {
+		 		$options = [
+				    'cost' => 10
+				];
+				$hash=password_hash($password, PASSWORD_DEFAULT,$options);
+				$user = (new entities\User())
+				    ->setEmail($login)
+				    ->setPassword($hash);
+				// $user = $entity_manager->getRepository('entities\User')->findOneBy(['id' => 2]);
+				$this->entity_manager->persist($user);
+				// Finally flush and execute the database transaction
+				$this->entity_manager->flush();
+				return true;
+	 		} catch (Doctrine\DBAL\DBALException $e) {
+	 			return false;
+	 		}
+ 		} else {
+ 			$error['error']='попытка внедрения невалидного пользователя: '.$login;
+ 			die(json_encode($error,JSON_UNESCAPED_UNICODE));
+ 		}
  	}
  	function __construct()
  	{

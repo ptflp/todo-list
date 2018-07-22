@@ -8,6 +8,6 @@ if(!empty($REQ[0])) {
 		include('../controllers/404.php');
 	}
 } else {
-	require('controllers/index.php');
+	require('controllers/indexController.php');
 }
 ?>
