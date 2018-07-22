@@ -10,12 +10,16 @@
  	public function auth($login,$password)
  	{
  		$user=$this->entity_manager->getRepository('entities\User')->findOneBy(['email' => $login]);
-		if(password_verify($password, $user->getPassword())) {
-			$this->id = $user->getId();
-		    return true;
-		} else {
-			return false;
-		}
+ 		if ($user) {
+ 			if(password_verify($password, $user->getPassword())) {
+				$this->id = $user->getId();
+			    return true;
+			} else {
+				return false;
+			}
+ 		} else {
+ 			return false;
+ 		}
  	}
  	public function authorize($id)
  	{

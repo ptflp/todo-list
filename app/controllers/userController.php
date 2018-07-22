@@ -8,7 +8,8 @@ if(!empty(REQURL[1])) {
 				if ($auth) {
 					$user->authorize($user->id);
 				} else {
-					echo 'Неправильная пара логин пароль';
+					$error['error']='Неправильная пара логин пароль';
+					echo json_encode($error,JSON_UNESCAPED_UNICODE);
 				}
 			}
 		break;
