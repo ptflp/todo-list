@@ -27,6 +27,8 @@ switch (REQURL[1]) {
 
 				// Finally flush and execute the database transaction
 				$entity_manager->flush();
+				$msg['success']=1;
+				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			} catch (Doctrine\DBAL\DBALException $e) {
 				$msg['success']=0;
 				$msg['error']=$e;
@@ -40,7 +42,22 @@ switch (REQURL[1]) {
 	break;
 	default:
 		if (is_numeric($_REQUEST['id'])) {
-			require('../view/todo.html');
+			try {
+				$todo = $entity_manager->getRepository('entities\Todolist')->findOneBy(['id' => $_REQUEST['id']]);
+				if($todo){
+					$user=$todo->getUser();
+					if($user->getId() == $main_user->id) {
+						require('../view/todo.html');
+					} else {
+						header('location: /');
+					}
+				} else {
+					header('location: /');
+				}
+			} catch (Doctrine\DBAL\DBALException $e) {
+				die('something went wrong');
+			}
+			//
 		} else {
 			header('location: /');
 		}
