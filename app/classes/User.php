@@ -24,8 +24,8 @@
  	}
  	public function authorize($id)
  	{
- 		$this->db=$user;
  		$user=$this->entity_manager->getRepository('entities\User')->findOneBy(['id' => $id]);
+ 		$this->db=$user;
  		$_SESSION['uid']=$user->getId();
  		$this->id=$user->getId();
  		$this->email=$user->getEmail();
