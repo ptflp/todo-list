@@ -2,9 +2,9 @@
 if(!empty(REQURL[1])) {
 	switch (REQURL[1]) {
 		case 'login':
-			if (isset($_GET['email']) && isset($_GET['password'])) {
+			if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
 				$user = new User($entity_manager);
-				$auth=$user->auth($_GET['email'],$_GET['password']);
+				$auth=$user->auth($_REQUEST['email'],$_REQUEST['password']);
 				if ($auth) {
 					$user->authorize($user->id);
 				} else {
@@ -21,13 +21,13 @@ if(!empty(REQURL[1])) {
 			if (!empty($_SESSION['uid'])) {
 				header('location: /');
 			}
-			if (isset($_GET['email']) && isset($_GET['password'])) {
+			if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
 				$user= new User();
-				if ($user->register($_GET['email'],$_GET['password'])) {
-					$userN=$entity_manager->getRepository('entities\User')->findOneBy(['email' => $_GET['email']]);
+				if ($user->register($_REQUEST['email'],$_REQUEST['password'])) {
+					$userN=$entity_manager->getRepository('entities\User')->findOneBy(['email' => $_REQUEST['email']]);
  					$user->authorize($userN->getId());
 				} else {
-					$error['error']='данный пользователь уже существует: '.$_GET['email'];
+					$error['error']='данный пользователь уже существует: '.$_REQUEST['email'];
 					echo json_encode($error,JSON_UNESCAPED_UNICODE);
 				}
 			}
