@@ -15,7 +15,7 @@ class User
     private $id;
 
     /**
-     * @Column(type="string")
+     * @Column(type="string", length=255, unique=true)
      */
     private $email;
 

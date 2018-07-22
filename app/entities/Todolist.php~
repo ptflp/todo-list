@@ -116,4 +116,28 @@ class Todolist
      * @var \entities\User
      */
     private $user;
+
+    /**
+     * Set user.
+     *
+     * @param \entities\User $user
+     *
+     * @return Todolist
+     */
+    public function setUser(\entities\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user.
+     *
+     * @return \entities\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 }

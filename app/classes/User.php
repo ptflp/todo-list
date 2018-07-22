@@ -32,6 +32,20 @@
  			return false;
  		}
  	}
+ 	public function register($login,$password)
+ 	{
+ 		$options = [
+		    'cost' => 10
+		];
+		$hash=password_hash($password, PASSWORD_DEFAULT,$options);
+		$user = (new entities\User())
+		    ->setEmail($login)
+		    ->setPassword($hash);
+		// $user = $entity_manager->getRepository('entities\User')->findOneBy(['id' => 2]);
+		$this->entity_manager->persist($user);
+		// Finally flush and execute the database transaction
+		$this->entity_manager->flush();
+ 	}
  	function __construct()
  	{
  		$configuration = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
