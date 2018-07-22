@@ -181,5 +181,50 @@
 						$menu._hide();
 
 			});
+		$('#createTodolist').on('click',function (e) {
+			e.preventDefault();
+			swal({
+			  text: 'Create Todolist',
+			  content: "input",
+			  buttons: ["cancel", true],
+			})
+			.then(title => {
+			  if (!title) throw null;
+
+			  return fetch(`/todo/create?title=${title}`, {
+			  	credentials: 'include'
+			  });
+			})
+			.then(results => {
+				console.log(results);
+			  return results.json();
+			})
+			.then(json => {
+                switch(json.success) {
+                  case "0":
+                    swal("Error!", data.error, "error");
+                    break;
+                  case "1":
+					swal({
+						title: json.success,
+						text: 'successfully added',
+						icon: 'success',
+					});
+                    setTimeout(function () {
+                        window.location.replace("/");
+                        window.location.href = "/";
+                    },1500);
+                    break;
+                }
+			})
+			.catch(err => {
+			  if (err) {
+			    swal("Oh noes!", "The AJAX request failed! " + err, "error");
+			  } else {
+			    swal.stopLoading();
+			    swal.close();
+			  }
+			});
+		});
 
 })(jQuery);
