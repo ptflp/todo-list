@@ -1,6 +1,8 @@
 <?php
 require_once "vendor/autoload.php";
-
+require "entities/User.php";
+require "entities/Todolist.php";
+session_start();
 // Setup Doctrine
 $configuration = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
     $paths = [__DIR__ . '/entities'],
