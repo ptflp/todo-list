@@ -200,20 +200,21 @@
 			  return results.json();
 			})
 			.then(json => {
+				console.log(json.success);
                 switch(json.success) {
-                  case "0":
+                  case 0:
                     swal("Error!", data.error, "error");
                     break;
-                  case "1":
+                  case 1:
 					swal({
-						title: json.success,
-						text: 'successfully added',
+						title: 'Success!',
+						text: 'todolist added',
 						icon: 'success',
 					});
                     setTimeout(function () {
                         window.location.replace("/");
                         window.location.href = "/";
-                    },1500);
+                    },2500);
                     break;
                 }
 			})
