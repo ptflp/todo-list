@@ -6,6 +6,7 @@
  {
  	public $id;
  	public $email;
+ 	public $db;
  	protected $entity_manager;
  	public function auth($login,$password)
  	{
@@ -23,6 +24,7 @@
  	}
  	public function authorize($id)
  	{
+ 		$this->db=$user;
  		$user=$this->entity_manager->getRepository('entities\User')->findOneBy(['id' => $id]);
  		$_SESSION['uid']=$user->getId();
  		$this->id=$user->getId();

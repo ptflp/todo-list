@@ -2,6 +2,6 @@
 if (empty($_SESSION['uid'])) {
 	header('location: /user/login');
 } else {
-	$user=new User();
+	$main_user=new User();
 }
 include('../view/index.html');
