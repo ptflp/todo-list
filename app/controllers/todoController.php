@@ -41,9 +41,9 @@ switch (REQURL[1]) {
 	case 'getlist':
 	break;
 	default:
-		if (is_numeric($_REQUEST['id'])) {
+		if (is_numeric(REQURL[1])) {
 			try {
-				$todo = $entity_manager->getRepository('entities\Todolist')->findOneBy(['id' => $_REQUEST['id']]);
+				$todo = $entity_manager->getRepository('entities\Todolist')->findOneBy(['id' => REQURL[1]]);
 				if($todo){
 					$user=$todo->getUser();
 					if($user->getId() == $main_user->id) {
