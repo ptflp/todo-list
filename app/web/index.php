@@ -1,5 +1,5 @@
 <?php
-defined('APP_ENV') or define('APP_ENV', 'dev');
+defined('APP_ENV') or define('APP_ENV', 'production');
 switch (APP_ENV) {
 	case 'dev':
 		error_reporting(E_ALL & ~E_NOTICE);
