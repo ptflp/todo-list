@@ -6,8 +6,6 @@ if (empty($_SESSION['uid'])) {
 }
 
 switch (REQURL[1]) {
-	case 'save':
-	break;
 	case 'create':
 		if (isset($_REQUEST['title'])) {
 			try {
@@ -38,7 +36,43 @@ switch (REQURL[1]) {
 			header('location: /');
 		}
 	break;
-	case 'getlist':
+	case 'action':
+		switch (REQURL[2]) {
+			case 'get':
+				if (is_numeric(REQURL[3])) {
+					try {
+						$todo = $entity_manager->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[3]]);
+						if($todo){
+							$user=$todo->getUser();
+							if($user->getId() == $main_user->id) {
+								$msg['success']=1;
+								$msg['data']=$todo->getTasks();
+								echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+
+							} else {
+								$msg['success']=0;
+								$msg['error']='permission error';
+								echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+							}
+						} else {
+							$msg['success']=0;
+							$msg['error']='permission error';
+							echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+						}
+					} catch (Doctrine\DBAL\DBALException $e) {
+						die('something went wrong');
+					}
+				} else {
+					header('location: /');
+				}
+				break;
+			default:
+				# code...
+				break;
+		}
+		// } else {
+		// 	header('location: /');
+		// }
 	break;
 	default:
 		if (is_numeric(REQURL[1])) {
