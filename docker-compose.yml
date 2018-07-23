@@ -12,8 +12,8 @@ services:
       - ./boot.sh:/root/scripts/boot.sh
     networks:
       - skynet
-    ports:
-      - 8000:80
+    environment:
+      - VIRTUAL_HOST=ptflp.ru
   frontend:
     image: node:9
     container_name: frontend
@@ -31,17 +31,6 @@ services:
       - skynet
     volumes:
       - "appdb:/var/lib/mysql"
-  myadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: myadmin
-    restart: always
-    ports:
-      - 8081:80
-    networks:
-      - skynet
-    volumes:
-      - "./myadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php"
-      - "./myadmin/config.inc.php:/etc/phpmyadmin/config.inc.php"
 networks:
   skynet:
     external:
