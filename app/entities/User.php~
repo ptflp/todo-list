@@ -3,7 +3,7 @@ namespace entities;
 
 /**
  * @Entity
- * @Table(name="user")
+ * @Table(name="user",options={"collate"="utf8mb4_unicode_ci","charset":"utf8mb4"})
  */
 class User
 {

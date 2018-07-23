@@ -3,7 +3,7 @@ namespace entities;
 
 /**
  * @Entity
- * @Table(name="todolist")
+ * @Table(name="todolist",options={"collate"="utf8mb4_unicode_ci","charset":"utf8mb4"})
  */
 class Todolist
 {
