@@ -2,16 +2,20 @@ version: "2"
 services:
   app:
     image: ptflp/yii2-basic-app
+    depends_on:
+      - appdb
+      - frontend
     container_name: app
     restart: always
     volumes:
       - ./app:/var/www/
+      - ./boot.sh:/root/scripts/boot.sh
     networks:
       - skynet
-    ports:
-      - 8000:80
+    environment:
+      - VIRTUAL_HOST=ptflp.ru
   frontend:
-    image: node:9-alpine
+    image: node:9
     container_name: frontend
     working_dir: /app
     volumes:
@@ -27,17 +31,6 @@ services:
       - skynet
     volumes:
       - "appdb:/var/lib/mysql"
-  myadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: myadmin
-    restart: always
-    ports:
-      - 8081:80
-    networks:
-      - skynet
-    volumes:
-      - "./myadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php"
-      - "./myadmin/config.inc.php:/etc/phpmyadmin/config.inc.php"
 networks:
   skynet:
     external:
