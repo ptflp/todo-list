@@ -47,7 +47,6 @@
 				    return item.complete == true;
 				});
 				todoApp.saveData();
-				todoApp.init();
 			});
 		},
 		filterHandler: function () { // выделение активной ссылки по нажатию / activate on click link in filter area
@@ -69,13 +68,11 @@
 						  case true:  // if (x === 'value1')
 						    tasks[i].complete = false;
 							todoApp.saveData();
-							todoApp.init();
 						    break;
 
 						  case false:  // if (x === 'value2')
 						    tasks[i].complete = true;
 							todoApp.saveData();
-							todoApp.init();
 						    break;
 
 						  default:
@@ -99,7 +96,6 @@
 						if (tasks[i].id==id) {
 							tasks[i].title=val;
 							todoApp.saveData();
-							todoApp.init();
 						}
 					}
 				}
@@ -120,7 +116,6 @@
 				    return item.id == id;
 				});
 				todoApp.saveData();
-				todoApp.init();
 			});
 		},
 		getData: function () { // получение данных
@@ -168,6 +163,7 @@
 			})
 			.done(function(json) {
 				console.log(json);
+			    todoApp.init();
 			})
 			.fail(function() {
 				console.log( "error" );
@@ -183,7 +179,6 @@
 			        $(this).val('');
 			        tasks.push(task);
 			        todoApp.saveData();
-			        todoApp.init();
 			    }
 			});
 		},
