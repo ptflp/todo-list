@@ -2,10 +2,14 @@ version: "2"
 services:
   app:
     image: ptflp/yii2-basic-app
+    depends_on:
+      - appdb
+      - frontend
     container_name: app
     restart: always
     volumes:
       - ./app:/var/www/
+      - ./boot.sh:/root/scripts/boot.sh
     networks:
       - skynet
     ports:
