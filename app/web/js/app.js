@@ -136,9 +136,9 @@
 			})
 			.done(function(json) {
 				if (json) {
-					tasks=JSON.parse(json);
+					tasks=json.data;
 				}
-				todoApp.render(href);
+				todoApp.render();
 				todoApp.initHandlers();
 			})
 			.fail(function() {
@@ -154,12 +154,23 @@
 			}
 		},
 		saveData: function () { // запись данных
+			console.log('save START');
+			var pathArray = window.location.pathname.split( '/' );
 			localStorage.setItem("tasks", JSON.stringify(tasks));
 			$.ajax({
-			  url: "/todo/action/get/"+pathArray[2],
+			  url: "/todo/action/save/"+pathArray[2],
 			  method: "POST",
 			  data: { data : JSON.stringify(tasks) },
-			  dataType: "html"
+			  dataType: "html",
+			    xhrFields: {
+			         withCredentials: true
+			    }
+			})
+			.done(function(json) {
+				console.log(json);
+			})
+			.fail(function() {
+				console.log( "error" );
 			});
 		},
 		addHandler: function () { // обработчик добавления задачи по нажатию enter /  add task handler on press enter

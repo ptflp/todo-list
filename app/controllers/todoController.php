@@ -14,7 +14,7 @@ switch (REQURL[1]) {
 				// Create a new task
 				$task = (new entities\Todolist())
 				    ->setTitle($_REQUEST['title'])
-				    ->setTasks("[{}]")
+				    ->setTasks("[]")
 				    ->setUser($user)
 				    ->setDate(new DateTime());
 
@@ -46,7 +46,7 @@ switch (REQURL[1]) {
 							$user=$todo->getUser();
 							if($user->getId() == $main_user->id) {
 								$msg['success']=1;
-								$msg['data']=$todo->getTasks();
+								$msg['data']=json_decode($todo->getTasks());
 								echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 
 							} else {
@@ -65,10 +65,39 @@ switch (REQURL[1]) {
 				} else {
 					header('location: /');
 				}
-				break;
+			break;
+			case 'save':
+				if (is_numeric(REQURL[3])) {
+					$todo = $entity_manager->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[3]]);
+					if($todo){
+						$user=$todo->getUser();
+						if($user->getId() == $main_user->id) {
+							$array=json_decode($_REQUEST['data']);
+							if (is_array($array)) {
+								$arr=[];
+								$i=0;
+								foreach ($array as $key => $value) {
+									$item = new stdClass();
+									$item->title=$value->title;
+									$item->complete=$value->complete;
+									$item->id=$value->id;
+									$arr[]=$item;
+								}
+								$json=json_encode($arr);
+								$todo->setTasks($json);
+								$entity_manager->merge($todo);
+								$entity_manager->flush();
+								echo $json;
+							}
+						}
+					}
+				} else {
+					header('location: /');
+				}
+			break;
 			default:
 				# code...
-				break;
+			break;
 		}
 		// } else {
 		// 	header('location: /');
