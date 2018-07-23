@@ -1,0 +1,23 @@
+[
+  {
+    "id": "todo-list",
+    "execute-command": "./todo-list/gitpull.sh",
+    "response-message": "Todo-list production updater",
+    "command-working-directory": "/home/sites/todo-list/",
+    "trigger-rule":
+    {
+      "match":
+      {
+        "type": "payload-hash-sha1",
+        "secret": "thisishorosho",
+        "parameter":
+        {
+          "source": "header",
+          "name": "X-Hub-Signature"
+        }
+      }
+
+    }
+  }
+]
+
