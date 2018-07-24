@@ -50,7 +50,7 @@
 			});
 		},
 		filterHandler: function () { // выделение активной ссылки по нажатию / activate on click link in filter area
-			$('.filters li a').on('click',function () {
+			$(window).on('hashchange', function() {
 				$('.filters li a').removeClass('selected');
 				$(this).addClass('selected');
 				let href = $(this).attr('href');
@@ -273,7 +273,4 @@
 	}
 	todoApp.init();
 	// Your starting point. Enjoy the ride!
-	$(window).on('hashchange', function() {
-	  console.log('changed');
-	});
 })(window);
