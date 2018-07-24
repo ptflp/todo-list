@@ -57,7 +57,11 @@
 						</button>
 					</div>
 
-					<div class="text-center p-t-90">
+					<div class="text-center p-t-15">
+							OR
+					</div>
+
+					<div class="text-center p-t-27">
 						<a class="txt1" href="/user/register">
 							Registration
 						</a>
