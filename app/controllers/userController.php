@@ -41,7 +41,7 @@ switch (REQURL[1]) {
 			if (!empty($_SESSION['uid'])) {
 				header('location: /');
 			}
-			include('../view/register.html');
+			include('../view/register.php');
 		}
 	break;
 

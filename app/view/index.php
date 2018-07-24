@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Phantom by HTML5 UP</title>
+		<title>Todolist py ptflp</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="/phantom/assets/css/main.css" />
@@ -27,7 +27,7 @@
 
 							<!-- Logo -->
 								<a href="/" class="logo">
-									<span class="symbol"><img src="/phantom/images/logo.svg" alt="" /></span><span class="title">Phantom</span>
+									<span class="symbol"><img src="/phantom/images/logo.svg" alt="" /></span><span class="title">Todolist</span>
 								</a>
 
 							<!-- Nav -->

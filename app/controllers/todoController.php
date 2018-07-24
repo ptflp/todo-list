@@ -110,7 +110,7 @@ switch (REQURL[1]) {
 				if($todo){
 					$user=$todo->getUser();
 					if($user->getId() == $main_user->id) {
-						require('../view/todo.html');
+						require('../view/todo.php');
 					} else {
 						header('location: /');
 					}
