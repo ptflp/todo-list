@@ -22,7 +22,7 @@ switch (REQURL[1]) {
 		}
 	break;
 	case 'logout':
-		session_destroy();
+		$TodoApp->user->logout();
 		header('location: /user/login');
 	break;
 	case 'register':

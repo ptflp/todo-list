@@ -31,7 +31,7 @@
  	}
  	public function isAuthorized()
  	{
- 		return $this->id == $_SESSION['uid'];
+ 		return is_numeric($_SESSION['uid']);
  	}
  	public function register($login,$password,$db)
  	{
@@ -55,5 +55,10 @@
  			$error['error']='попытка внедрения невалидного пользователя: '.$login;
  			die(json_encode($error,JSON_UNESCAPED_UNICODE));
  		}
+ 	}
+ 	public function logout()
+ 	{
+ 		unset($_SESSION['uid']);
+ 		session_destroy();
  	}
  }
