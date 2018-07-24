@@ -35,6 +35,43 @@ switch (REQURL[1]) {
 			header('location: /');
 		}
 	break;
+	case 'delete':
+		if (is_numeric(REQURL[2])) {
+			try {
+				$user=$TodoApp->user->db;
+				$TodoApp->db->persist($user);
+				// Create a new task
+				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
+				if (is_object($todo)) {
+					$Tuser=$todo->getUser();
+					if($Tuser->getId() == $TodoApp->user->id) {
+						// Add the task the to list of the User tasks. Since we used cascade={"all"}, we
+						// don't need to persist the task separately: it will be persisted when persisting
+						// the User
+						$user->removeTodolist($todo);
+						// Finally flush and execute the database transaction
+						$TodoApp->db->flush();
+						$msg['success']=1;
+						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+					} else {
+						$msg['success']=0;
+						$msg['error']='nope';
+						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+					}
+				} else {
+					$msg['success']=0;
+					$msg['error']='nope';
+					echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+				}
+			} catch (Doctrine\DBAL\DBALException $e) {
+				$msg['success']=0;
+				$msg['error']=$e;
+				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+			}
+		} else {
+			header('location: /');
+		}
+	break;
 	case 'action':
 		switch (REQURL[2]) {
 			case 'get':
