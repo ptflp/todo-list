@@ -7,10 +7,9 @@
  	public $id;
  	public $email;
  	public $db;
- 	protected $entity_manager;
- 	public function auth($login,$password)
+ 	public function auth($login,$password,$db)
  	{
- 		$user=$this->entity_manager->getRepository('entities\User')->findOneBy(['email' => $login]);
+ 		$user=$db->getRepository('entities\User')->findOneBy(['email' => $login]);
  		if ($user) {
  			if(password_verify($password, $user->getPassword())) {
 				$this->id = $user->getId();
@@ -22,9 +21,9 @@
  			return false;
  		}
  	}
- 	public function authorize($id)
+ 	public function authorize($id,$db)
  	{
- 		$user=$this->entity_manager->getRepository('entities\User')->findOneBy(['id' => $id]);
+ 		$user=$db->getRepository('entities\User')->findOneBy(['id' => $id]);
  		$this->db=$user;
  		$_SESSION['uid']=$user->getId();
  		$this->id=$user->getId();
@@ -38,7 +37,7 @@
  			return false;
  		}
  	}
- 	public function register($login,$password)
+ 	public function register($login,$password,$db)
  	{
  		if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
 	 		try {
@@ -49,10 +48,9 @@
 				$user = (new entities\User())
 				    ->setEmail($login)
 				    ->setPassword($hash);
-				// $user = $entity_manager->getRepository('entities\User')->findOneBy(['id' => 2]);
-				$this->entity_manager->persist($user);
+				$db->persist($user);
 				// Finally flush and execute the database transaction
-				$this->entity_manager->flush();
+				$db->flush();
 				return true;
 	 		} catch (Doctrine\DBAL\DBALException $e) {
 	 			return false;
@@ -60,29 +58,6 @@
  		} else {
  			$error['error']='попытка внедрения невалидного пользователя: '.$login;
  			die(json_encode($error,JSON_UNESCAPED_UNICODE));
- 		}
- 	}
- 	function __construct()
- 	{
- 		$configuration = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
-		    $paths = [__DIR__ . '/entities'],
-		    $isDevMode = true
-		);
-
-		// Setup connection parameters
-		$connection_parameters = [
-		    'dbname' => 'appdb',
-		    'user' => 'root',
-		    'password' => 'root',
-		    'host' => 'appdb',
-		    'driver' => 'pdo_mysql'
-		];
-
-		// Get the entity manager
-		$entity_manager = Doctrine\ORM\EntityManager::create($connection_parameters, $configuration);
- 		$this->entity_manager=$entity_manager;
- 		if (!empty($_SESSION['uid'])) {
- 			$this->authorize($_SESSION['uid']);
  		}
  	}
  }
