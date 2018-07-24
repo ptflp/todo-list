@@ -199,7 +199,7 @@
 		render: function (hash=false) { // отрисовка задач
 			if (tasks.length>0) {
 				let tasksTemp=[];
-				if(window.location.hash) {
+				if(window.location.hash || hash) {
 					if (!hash) {
 						hash ='#' + window.location.hash.substring(1);
 					}
