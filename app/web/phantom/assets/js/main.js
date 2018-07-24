@@ -210,6 +210,8 @@
 						title: 'Success!',
 						text: 'todolist added',
 						icon: 'success',
+						closeOnClickOutside: false,
+						button: false
 					});
                     setTimeout(function () {
                         window.location.replace("/");
@@ -231,40 +233,53 @@
 		$('.action li a').on('click',function (e) {
 			e.preventDefault();
 			let action = $(this).data('id');
-			console.log(action);
 			action = action.split( '-' );
-			console.log(action);
 			switch (action[0]) {
 			 	case 'remove':
-					$.ajax({
-					    url: "/todo/remove/"+action[1],
-					    type: "GET",
-					    dataType: 'json',
-					    xhrFields: {
-					         withCredentials: true
-					    }
+				 	swal({
+						title: "Are you sure?",
+						text: "Once deleted, you will not be able to recover this todolist!",
+						icon: "warning",
+						buttons: true,
+						dangerMode: true,
 					})
-					.done(function(json) {
-						console.log(json.success);
-						switch (json.success) {
-						 	case 1:
-								swal({
-									title: 'Success!',
-									text: 'todolist removed',
-									icon: 'success',
-								});
-			                    setTimeout(function () {
-			                        window.location.replace("/");
-			                        window.location.href = "/";
-			                    },2500);
-						 	break;
+					.then((willDelete) => {
+						if (willDelete) {
+							$.ajax({
+							    url: "/todo/remove/"+action[1],
+							    type: "GET",
+							    dataType: 'json',
+							    xhrFields: {
+							         withCredentials: true
+							    }
+							})
+							.done(function(json) {
+								switch (json.success) {
+								 	case 1:
+										swal({
+											title: 'Success!',
+											text: 'Poof! Your todolist has been removed!',
+											icon: 'success',
+											closeOnClickOutside: false,
+											button: false
+										});
+					                    setTimeout(function () {
+					                        window.location.replace("/");
+					                        window.location.href = "/";
+					                    },2500);
+								 	break;
+								}
+							})
+							.fail(function() {
+								swal("Oh noes!", "The AJAX request failed! " + err, "error");
+							});
+						} else {
+							swal("Your todolist safe!");
 						}
-					})
-					.fail(function() {
-						console.log( "error" );
 					});
 			 	break;
-
+			 	case 'edit':
+			 		break;
 			 	default:
 			 		break;
 			 }
