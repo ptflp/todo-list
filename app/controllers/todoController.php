@@ -7,10 +7,10 @@ switch (REQURL[1]) {
 	case 'create':
 		if (isset($_REQUEST['title'])) {
 			try {
-				// $user = $entity_manager->getRepository('entities\User')->findOneBy(['id' => $main_user->id]);
-				// $entity_manager->persist($user);
-				$user=$main_user->db;
-				$entity_manager->persist($user);
+				// $user = $TodoApp->db->getRepository('entities\User')->findOneBy(['id' => $TodoApp->user->id]);
+				// $TodoApp->db->persist($user);
+				$user=$TodoApp->user->db;
+				$TodoApp->db->persist($user);
 				// Create a new task
 				$task = (new entities\Todolist())
 				    ->setTitle($_REQUEST['title'])
@@ -24,7 +24,7 @@ switch (REQURL[1]) {
 				$user->addTodolist($task);
 
 				// Finally flush and execute the database transaction
-				$entity_manager->flush();
+				$TodoApp->db->flush();
 				$msg['success']=1;
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			} catch (Doctrine\DBAL\DBALException $e) {
@@ -41,15 +41,14 @@ switch (REQURL[1]) {
 			case 'get':
 				if (is_numeric(REQURL[3])) {
 					try {
-						$list=$main_user->db->getTodolist();
-						$todo=$list[REQURL[3]];
+						$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[3]]);
 						if(is_object($todo)){
 							$msg['success']=1;
 							$msg['data']=json_decode($todo->getTasks());
 							echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 						} else {
 							$msg['success']=0;
-							$msg['error']='permission error';
+							$msg['error']='nope';
 							echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 						}
 					} catch (Doctrine\DBAL\DBALException $e) {
@@ -61,10 +60,10 @@ switch (REQURL[1]) {
 			break;
 			case 'save':
 				if (is_numeric(REQURL[3])) {
-					$todo = $entity_manager->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[3]]);
+					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[3]]);
 					if($todo){
 						$user=$todo->getUser();
-						if($user->getId() == $main_user->id) {
+						if($user->getId() == $TodoApp->user->id) {
 							$array=json_decode($_REQUEST['data']);
 							if (is_array($array)) {
 								$arr=[];
@@ -78,18 +77,22 @@ switch (REQURL[1]) {
 								}
 								$json=json_encode($arr);
 								$todo->setTasks($json);
-								$entity_manager->merge($todo);
-								$entity_manager->flush();
+								$TodoApp->db->merge($todo);
+								$TodoApp->db->flush();
 								echo $json;
+							} else {
+								header('location: /');
 							}
 						}
+					} else {
+						header('location: /');
 					}
 				} else {
 					header('location: /');
 				}
 			break;
 			default:
-				# code...
+				header('location: /');
 			break;
 		}
 		// } else {
@@ -99,10 +102,10 @@ switch (REQURL[1]) {
 	default:
 		if (is_numeric(REQURL[1])) {
 			try {
-				$todo = $entity_manager->getRepository('entities\Todolist')->findOneBy(['id' => REQURL[1]]);
+				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' => REQURL[1]]);
 				if($todo){
 					$user=$todo->getUser();
-					if($user->getId() == $main_user->id) {
+					if($user->getId() == $TodoApp->user->id) {
 						require('../view/todo.php');
 					} else {
 						header('location: /');
