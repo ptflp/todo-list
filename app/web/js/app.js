@@ -120,7 +120,6 @@
 		},
 		getData: function () { // получение данных
 			var pathArray = window.location.pathname.split( '/' );
-			console.log(pathArray[2]);
 			$.ajax({
 			    url: "/todo/action/get/"+pathArray[2],
 			    type: "GET",
@@ -149,7 +148,6 @@
 			}
 		},
 		saveData: function () { // запись данных
-			console.log('save START');
 			var pathArray = window.location.pathname.split( '/' );
 			localStorage.setItem("tasks", JSON.stringify(tasks));
 			$.ajax({
@@ -162,7 +160,6 @@
 			    }
 			})
 			.done(function(json) {
-				console.log(json);
 			    todoApp.init();
 			})
 			.fail(function() {
