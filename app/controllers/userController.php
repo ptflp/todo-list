@@ -17,7 +17,7 @@ switch (REQURL[1]) {
 			if (!empty($_SESSION['uid'])) {
 				header('location: /');
 			}
-			include('../view/login.html');
+			include('../view/login.php');
 		}
 	break;
 	case 'logout':
