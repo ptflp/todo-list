@@ -230,7 +230,45 @@
 
 		$('.action li a').on('click',function (e) {
 			e.preventDefault();
-			console.log($(this).data('id'));
+			let action = $(this).data('id');
+			console.log(action);
+			action = action.split( '-' );
+			console.log(action);
+			switch (action[0]) {
+			 	case 'remove':
+					$.ajax({
+					    url: "/todo/remove/"+action[1],
+					    type: "GET",
+					    dataType: 'json',
+					    xhrFields: {
+					         withCredentials: true
+					    }
+					})
+					.done(function(json) {
+						console.log(json.success);
+						switch (json.success) {
+						 	case 1:
+								swal({
+									title: 'Success!',
+									text: 'todolist removed',
+									icon: 'success',
+								});
+			                    setTimeout(function () {
+			                        window.location.replace("/");
+			                        window.location.href = "/";
+			                    },2500);
+						 	break;
+						}
+					})
+					.fail(function() {
+						console.log( "error" );
+					});
+			 	break;
+
+			 	default:
+			 		break;
+			 }
+
 		});
 
 })(jQuery);

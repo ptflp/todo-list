@@ -35,7 +35,7 @@ switch (REQURL[1]) {
 			header('location: /');
 		}
 	break;
-	case 'delete':
+	case 'remove':
 		if (is_numeric(REQURL[2])) {
 			try {
 				$user=$TodoApp->user->db;
