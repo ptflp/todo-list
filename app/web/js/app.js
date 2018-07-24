@@ -273,5 +273,7 @@
 	}
 	todoApp.init();
 	// Your starting point. Enjoy the ride!
-
+	$(window).on('hashchange', function() {
+	  console.log('changed');
+	});
 })(window);
