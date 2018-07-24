@@ -31,11 +31,7 @@
  	}
  	public function isAuthorized()
  	{
- 		if ($this->id == $_SESSION['uid']) {
- 			return true;
- 		} else {
- 			return false;
- 		}
+ 		return $this->id == $_SESSION['uid'];
  	}
  	public function register($login,$password,$db)
  	{

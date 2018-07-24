@@ -15,7 +15,7 @@ switch (REQURL[1]) {
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			}
 		} else {
-			if (!empty($_SESSION['uid'])) {
+			if ($TodoApp->user->isAuthorized()) {
 				header('location: /');
 			}
 			include('../view/login.php');
@@ -39,7 +39,7 @@ switch (REQURL[1]) {
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			}
 		} else {
-			if (!empty($_SESSION['uid'])) {
+			if ($TodoApp->user->isAuthorized()) {
 				header('location: /');
 			}
 			include('../view/register.php');

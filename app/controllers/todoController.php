@@ -1,8 +1,7 @@
 <?php
-if (empty($_SESSION['uid'])) {
+if (!$TodoApp->user->isAuthorized()) {
 	header('location: /user/login');
 }
-
 switch (REQURL[1]) {
 	case 'create':
 		if (isset($_REQUEST['title'])) {
