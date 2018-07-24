@@ -6,16 +6,12 @@
 -->
 <html>
 	<head>
-		<title>Phantom by HTML5 UP</title>
+		<title>Todolist py ptflp</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="/phantom/assets/css/main.css" />
+		<link rel="stylesheet" href="/phantom/assets/css/custom.css" />
 		<noscript><link rel="stylesheet" href="/phantom/assets/css/noscript.css" /></noscript>
-		<style type="text/css">
-			.tiles article.style100500 > .image:before {
-			    background-color: #014b6f;
-			}
-		</style>
 	</head>
 	<body class="is-preload">
 		<!-- Wrapper -->
@@ -27,7 +23,7 @@
 
 							<!-- Logo -->
 								<a href="/" class="logo">
-									<span class="symbol"><img src="/phantom/images/logo.svg" alt="" /></span><span class="title">Phantom</span>
+									<span class="symbol"><img src="/phantom/images/logo.svg" alt="" /></span><span class="title">Todolist</span>
 								</a>
 
 							<!-- Nav -->
@@ -45,7 +41,7 @@
 						<h2>Menu</h2>
 						<ul>
 							<li><a href="">Главная</a></li>
-							<li><a href="/user/logout">Logout (<?=$user->email?>)</a></li>
+							<li><a href="/user/logout">Logout (<?=$TodoApp->user->email?>)</a></li>
 						</ul>
 					</nav>
 
@@ -53,7 +49,7 @@
 					<div id="main">
 						<div class="inner">
 							<header>
-								<h1>Choose or create your todo list<br /> Look code at <a href="https://github.com/ptflp/todo-list">https://github.com/ptflp/todo-list</a>
+								<h1>Choose or create your todo list<br /> Source code at <a href="https://github.com/ptflp/todo-list">https://github.com/ptflp/todo-list</a>
 							</header>
 							<section class="tiles">
 								<article class="style2">
@@ -68,7 +64,7 @@
 									</a>
 								</article>
 								<?php
-								$todolist=$user->db->getTodolist();
+								$todolist=$TodoApp->user->db->getTodolist();
 								$i=2;
 								foreach ($todolist as $todo):
 									$b=0;
@@ -84,6 +80,11 @@
 										<a href="/todo/<?=$todo->getId();?>">
 											<h2><?=$todo->getTitle();?></h2>
 										</a>
+										<ul class="icons action">
+											<li><a href="#" class="icon style2 share fa-share-alt-square action-control" data-id="share-<?=$todo->getId();?>"><span class="label">Share</span></a></li>
+											<li><a href="#" class="icon style2 edit fa-edit action-control" data-id="edit-<?=$todo->getId();?>"><span class="label">Edit</span></a></li>
+											<li><a href="#" class="icon style2 remove fa-trash action-control" data-id="remove-<?=$todo->getId();?>"><span class="label">Remove</span></a></li>
+										</ul>
 									</article>
 								<?php endforeach; ?>
 							</section>

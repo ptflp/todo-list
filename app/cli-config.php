@@ -1,5 +1,5 @@
 <?php
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
-require_once 'bootstrap.php';
+require_once 'resource/bootstrap.php';
 
-return ConsoleRunner::createHelperSet($entity_manager);
+return ConsoleRunner::createHelperSet($TodoApp->db);

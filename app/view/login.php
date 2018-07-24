@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Login V3</title>
+	<title>Login Todolist by ptflp</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
@@ -32,13 +32,13 @@
 	<div class="limiter">
 		<div class="container-login100" style="background-image: url('/login/images/bg-01.jpg');">
 			<div class="wrap-login100">
-				<form class="login100-form validate-form" method="POST" id="register">
+				<form class="login100-form validate-form" method="POST" id="login">
 					<span class="login100-form-logo">
 						<i class="zmdi zmdi-landscape"></i>
 					</span>
 
 					<span class="login100-form-title p-b-34 p-t-27">
-						Registration
+						Log in
 					</span>
 
 					<div class="wrap-input100 validate-input" data-validate = "Enter email">
@@ -53,13 +53,17 @@
 
 					<div class="container-login100-form-btn">
 						<button class="login100-form-btn">
-							Sign in
+							Login
 						</button>
 					</div>
 
-					<div class="text-center p-t-90">
-						<a class="txt1" href="/user/login">
-							Login
+					<div class="text-center p-t-15">
+							OR
+					</div>
+
+					<div class="text-center p-t-27">
+						<a class="txt1" href="/user/register">
+							Registration
 						</a>
 					</div>
 				</form>
