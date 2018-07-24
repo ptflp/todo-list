@@ -26,11 +26,15 @@ switch (REQURL[1]) {
 		header('location: /user/login');
 	break;
 	case 'register':
+		if ($TodoApp->user->isAuthorized()) {
+			header('location: /');
+		}
 		if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
-			$user= new User();
-			if ($user->register($_REQUEST['email'],$_REQUEST['password'])) {
-				$userN=$entity_manager->getRepository('entities\User')->findOneBy(['email' => $_REQUEST['email']]);
-				$user->authorize($userN->getId());
+			$user = $TodoApp->user;
+			$db = $TodoApp->db;
+			if ($user->register($_REQUEST['email'],$_REQUEST['password'],$db)) {
+				$userN=$db->getRepository('entities\User')->findOneBy(['email' => $_REQUEST['email']]);
+				$user->authorize($userN->getId(),$db);
 				$msg['success']='1';
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			} else {
@@ -39,9 +43,6 @@ switch (REQURL[1]) {
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			}
 		} else {
-			if ($TodoApp->user->isAuthorized()) {
-				header('location: /');
-			}
 			include('../view/register.php');
 		}
 	break;
