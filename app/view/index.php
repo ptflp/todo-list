@@ -53,7 +53,7 @@
 					<div id="main">
 						<div class="inner">
 							<header>
-								<h1>Choose or create your todo list<br /> Look code at <a href="https://github.com/ptflp/todo-list">https://github.com/ptflp/todo-list</a>
+								<h1>Choose or create your todo list<br /> Source code at <a href="https://github.com/ptflp/todo-list">https://github.com/ptflp/todo-list</a>
 							</header>
 							<section class="tiles">
 								<article class="style2">
