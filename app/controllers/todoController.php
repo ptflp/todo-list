@@ -1,15 +1,15 @@
 <?php
 if (empty($_SESSION['uid'])) {
 	header('location: /user/login');
-} else {
-	$main_user=new User();
 }
 
 switch (REQURL[1]) {
 	case 'create':
 		if (isset($_REQUEST['title'])) {
 			try {
-				$user = $entity_manager->getRepository('entities\User')->findOneBy(['id' => $main_user->id]);
+				// $user = $entity_manager->getRepository('entities\User')->findOneBy(['id' => $main_user->id]);
+				// $entity_manager->persist($user);
+				$user=$main_user->db;
 				$entity_manager->persist($user);
 				// Create a new task
 				$task = (new entities\Todolist())
@@ -41,19 +41,12 @@ switch (REQURL[1]) {
 			case 'get':
 				if (is_numeric(REQURL[3])) {
 					try {
-						$todo = $entity_manager->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[3]]);
-						if($todo){
-							$user=$todo->getUser();
-							if($user->getId() == $main_user->id) {
-								$msg['success']=1;
-								$msg['data']=json_decode($todo->getTasks());
-								echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-
-							} else {
-								$msg['success']=0;
-								$msg['error']='permission error';
-								echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-							}
+						$list=$main_user->db->getTodolist();
+						$todo=$list[REQURL[3]];
+						if(is_object($todo)){
+							$msg['success']=1;
+							$msg['data']=json_decode($todo->getTasks());
+							echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 						} else {
 							$msg['success']=0;
 							$msg['error']='permission error';

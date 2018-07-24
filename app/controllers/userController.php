@@ -2,10 +2,11 @@
 switch (REQURL[1]) {
 	case 'login':
 		if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
-			$user = new User($entity_manager);
-			$auth=$user->auth($_REQUEST['email'],$_REQUEST['password']);
+			$user = $TodoApp->user;
+			$db = $TodoApp->db;
+			$auth=$user->auth($_REQUEST['email'],$_REQUEST['password'],$db);
 			if ($auth) {
-				$user->authorize($user->id);
+				$user->authorize($user->id,$db);
 				$msg['success']='1';
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			} else {

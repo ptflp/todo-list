@@ -41,7 +41,7 @@
 						<h2>Menu</h2>
 						<ul>
 							<li><a href="">Главная</a></li>
-							<li><a href="/user/logout">Logout (<?=$user->email?>)</a></li>
+							<li><a href="/user/logout">Logout (<?=$TodoApp->user->email?>)</a></li>
 						</ul>
 					</nav>
 
@@ -64,7 +64,7 @@
 									</a>
 								</article>
 								<?php
-								$todolist=$user->db->getTodolist();
+								$todolist=$TodoApp->user->db->getTodolist();
 								$i=2;
 								foreach ($todolist as $todo):
 									$b=0;
