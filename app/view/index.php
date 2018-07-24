@@ -10,12 +10,8 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="/phantom/assets/css/main.css" />
+		<link rel="stylesheet" href="/phantom/assets/css/custom.css" />
 		<noscript><link rel="stylesheet" href="/phantom/assets/css/noscript.css" /></noscript>
-		<style type="text/css">
-			.tiles article.style100500 > .image:before {
-			    background-color: #014b6f;
-			}
-		</style>
 	</head>
 	<body class="is-preload">
 		<!-- Wrapper -->
@@ -84,6 +80,11 @@
 										<a href="/todo/<?=$todo->getId();?>">
 											<h2><?=$todo->getTitle();?></h2>
 										</a>
+										<ul class="icons action">
+											<li><a href="#" class="icon style2 share fa-share-alt-square action-control" data-id="share-<?=$todo->getId();?>"><span class="label">Share</span></a></li>
+											<li><a href="#" class="icon style2 edit fa-edit action-control" data-id="edit-<?=$todo->getId();?>"><span class="label">Edit</span></a></li>
+											<li><a href="#" class="icon style2 remove fa-trash action-control" data-id="remove-<?=$todo->getId();?>"><span class="label">Remove</span></a></li>
+										</ul>
 									</article>
 								<?php endforeach; ?>
 							</section>
