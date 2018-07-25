@@ -9,10 +9,8 @@
  	public function setPermission($todolist_id,$user_email,$permission,$db)
  	{
 		$perm=$this->checkPermByEmail($todolist_id,$user_email,$db);
-		dump_r($perm);
 		if ($perm) {
 			$share = $db->getRepository('entities\Share')->findOneBy(['user_email' =>$user_email]);
-			dump_r($share->getId());
 			$share->setPermission($permission);
 			$db->merge($share);
 			$db->flush();
@@ -58,7 +56,6 @@
 			            ->setParameter('todolist_id', $todolist_id)
 			            ->getQuery()
 			            ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
-			            dump_r($result);
 			        if (!empty($result)) {
 		 				return $permission=$result[0]['permission'];
 			        } else {
