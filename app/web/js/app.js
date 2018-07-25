@@ -134,6 +134,7 @@
 					tasks=json.data;
 				}
 				todoApp.render();
+				todoApp.tasksCount();
 				todoApp.initHandlers();
 			})
 			.fail(function() {
