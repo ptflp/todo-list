@@ -1,11 +1,12 @@
 <?php
-require_once "../resource/autoload.php";
-require "../entities/User.php";
-require "../entities/Todolist.php";
+require_once "/var/www/resource/autoload.php";
+require "/var/www/entities/User.php";
+require "/var/www/entities/Todolist.php";
+require "/var/www/entities/Share.php";
 session_start();
 
 $configuration = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
-    $paths = [__DIR__ . '/entities'],
+    $paths = ['/var/www/entities/'],
     $isDevMode = true
 );
 $connection_parameters = [
