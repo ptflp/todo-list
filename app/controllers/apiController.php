@@ -99,6 +99,10 @@ switch (REQURL[1]) {
 					} else {
 						header('location: /');
 					}
+				} else {
+					$msg['success']=0;
+					$msg['error']='nope';
+					echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 				}
 			} else {
 				header('location: /');
