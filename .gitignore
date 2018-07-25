@@ -4,3 +4,4 @@ app/vendor
 app/web/package-lock.json
 sublime-gulp.log
 .sublime-gulp-tmp.js
+*.swp
