@@ -119,11 +119,22 @@ switch (REQURL[1]) {
 	case 'get':
 		if (is_numeric(REQURL[2])) {
 			try {
-				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
-				$todoID = $todo->getShare();
-				$key = array_search($TodoApp->user->email, object_column($share, 'user_email'));
+				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' => REQURL[2]]);
 				if(is_object($todo)){
-					if ($key) {
+					$access=false;
+					$user=$todo->getUser();
+					if ($user->getId() == $TodoApp->user->id) {
+						$access=true;
+					} else {
+						$share = $TodoApp->db->getRepository('entities\Share')->findAll(['user_email' => $TodoApp->user->email]);
+						$id=$todo->getId();
+						foreach ($share as $item) {
+							if($item->getId() == $id) {
+								$access=true;
+							}
+						}
+					}
+					if ($access) {
 						$msg['success']=1;
 						$msg['title']=$todo->getTitle();
 						$msg['data']=json_decode($todo->getTasks());
