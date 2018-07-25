@@ -187,26 +187,16 @@ switch (REQURL[1]) {
 	case 'share':
 		if (is_numeric(REQURL[2])) {
 	 		if (filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL) && is_numeric($_REQUEST['permission'])) {
-	 			$permission=[1,2];
-	 			if (!in_array($_REQUEST['permission'])) {
+	 			$permission=[2,3];
+	 			if (!in_array($_REQUEST['permission'],$permission)) {
 					header('location: /');
 	 			}
 				try {
-					$todo = $TodoApp->db->getRepository('entities\Share')->findOneBy(['id' =>REQURL[2]]);
-					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
-					$user=$todo->getUser();
-					if(is_object($todo) && $user->getId() == $TodoApp->user->id){
-						$TodoApp->db->persist($todo);
-						$share = (new entities\Share())
-						    ->setPermission($_REQUEST['permission'])
-						    ->setUserEmail($_REQUEST['email'])
-						    ->setTodolist($todo);
-						$todo->addShare($share);
-						$TodoApp->db->flush();
-						$msg['success']=1;
-						$msg['title']=$todo->getTitle();
-						$msg['data']=json_decode($todo->getTasks());
-						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+					$todo=new Todo();
+					$email=$TodoApp->user->email;
+					$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
+					if ($perm==1) {
+						$todo->setPermission(REQURL[2],$_REQUEST['email'],$_REQUEST['permission'],$TodoApp->db);
 					} else {
 						$msg['success']=0;
 						$msg['error']='nope';
@@ -219,7 +209,7 @@ switch (REQURL[1]) {
 				}
 			}
 		} else {
-			header('location: /');
+			// header('location: /');
 		}
 	break;
 	default:
