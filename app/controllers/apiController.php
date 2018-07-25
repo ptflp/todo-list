@@ -115,7 +115,8 @@ switch (REQURL[1]) {
 		if (is_numeric(REQURL[2])) {
 			try {
 				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
-				if(is_object($todo)){
+				$user=$todo->getUser();
+				if(is_object($todo) && $user->getId() == $TodoApp->user->id){
 					$msg['success']=1;
 					$msg['title']=$todo->getTitle();
 					$msg['data']=json_decode($todo->getTasks());
@@ -132,10 +133,36 @@ switch (REQURL[1]) {
 			header('location: /');
 		}
 	break;
+	case 'edit':
+		if (is_numeric(REQURL[2])) {
+			try {
+				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
+				$user=$todo->getUser();
+				if(is_object($todo) && $user->getId() == $TodoApp->user->id){
+					$todo->setTitle($_REQUEST['title']);
+					$TodoApp->db->merge($todo);
+					$TodoApp->db->flush();
+					$msg['success']=1;
+					$msg['title']=$todo->getTitle();
+					$msg['data']=json_decode($todo->getTasks());
+					echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+				} else {
+					$msg['success']=0;
+					$msg['error']='nope';
+					echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+				}
+			} catch (Doctrine\DBAL\DBALException $e) {
+				die('something went wrong'.$e);
+			}
+		} else {
+			header('location: /');
+		}
+	break;
 	default:
 		if($_REQUEST['settings']) {
 			$url['create']="/api/create/";
 			$url['get']="/api/get/";
+			$url['edit']="/api/edit/";
 			$url['save']="/api/save/";
 			$url['remove']="/api/remove/";
 			echo json_encode($url,JSON_UNESCAPED_UNICODE);

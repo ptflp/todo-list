@@ -194,7 +194,6 @@
 		})
 		.done(function(json) {
 			action=json;
-		    todoApp.init();
 		})
 		.fail(function() {
 			console.log( "error" );
@@ -297,6 +296,66 @@
 					});
 			 	break;
 			 	case 'edit':
+
+					$.ajax({
+					    url: action["get"]+actionID[1],
+					    type: "GET",
+					    dataType: 'json',
+					    xhrFields: {
+					         withCredentials: true
+					    }
+					})
+					.done(function(json) {
+						let input = document.createElement('input');
+						input.value = json.title;
+						swal({
+						  title: 'Edit title',
+						  content: {
+						    element: "input",
+						    attributes: {
+						      type: "text",
+						      value: json.title
+						    },
+						  },
+						})
+						.then(title => {
+						  if (!title) throw null;
+							$.ajax({
+							    url: action["edit"]+actionID[1]+"?title="+title,
+							    type: "GET",
+							    dataType: 'json',
+							    xhrFields: {
+							         withCredentials: true
+							    }
+							})
+							.done(function(json) {
+								switch (json.success) {
+								 	case 1:
+										swal({
+											title: 'Success!',
+											text: 'Poof! Your todolist title now is ' + json.title,
+											icon: 'success',
+										});
+					                    // setTimeout(function () {
+					                    //     window.location.replace("/");
+					                    //     window.location.href = "/";
+					                    // },2500);
+					                    $('article#todo-'+actionID[1]).find('h2').html(json.title);
+								 	break;
+								}
+							})
+							.fail(function(err) {
+								swal("Oh noes!", "The AJAX request failed! " + JSON.stringify(err), "error");
+							});
+						});
+	                    // setTimeout(function () {
+	                    //     window.location.replace("/");
+	                    //     window.location.href = "/";
+	                    // },2500);
+					})
+					.fail(function() {
+						swal("Oh noes!", "The AJAX request failed! " + err, "error");
+					});
 			 		break;
 			 	default:
 			 		break;
