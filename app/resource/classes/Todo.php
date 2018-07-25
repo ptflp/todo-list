@@ -19,10 +19,9 @@
 			$msg['email']=$share->getUserEmail();
 			$msg['title']=$this->db->getTitle();
 			$msg['data']=json_decode($this->db->getTasks());
-			echo 'yep';
+			$this->data=$msg;
 			return true;
 		} else {
-			echo 'nope';
 			$share = (new entities\Share())
 			    ->setPermission($permission)
 			    ->setUserEmail($user_email)
@@ -34,6 +33,7 @@
 			$msg['email']=$share->getUserEmail();
 			$msg['title']=$this->db->getTitle();
 			$msg['data']=json_decode($this->db->getTasks());
+			$this->data=$msg;
 			return true;
 		}
  	}

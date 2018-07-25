@@ -197,6 +197,7 @@ switch (REQURL[1]) {
 					$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
 					if ($perm==1) {
 						$todo->setPermission(REQURL[2],$_REQUEST['email'],$_REQUEST['permission'],$TodoApp->db);
+						echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 					} else {
 						$msg['success']=0;
 						$msg['error']='nope';
