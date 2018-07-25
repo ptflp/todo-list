@@ -220,6 +220,7 @@
 						}
 					    break;
 					  default:
+					  	todoApp.filterActive('#/');
 					    tasksTemp=tasks;
 					    break;
 					}
