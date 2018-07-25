@@ -16,11 +16,6 @@ switch (REQURL[1]) {
 				    ->setTasks("[]")
 				    ->setUser($user)
 				    ->setDate(new DateTime());
-				$share = (new entities\Share())
-				    ->setPermission('0')
-				    ->setUserEmail($user->getEmail())
-				    ->setTodolist($todo);
-				$todo->addShare($share);
 
 				// Add the todolist the to list of the User tasks. Since we used cascade={"all"}, we
 				// don't need to persist the todolist separately: it will be persisted when persisting
@@ -181,10 +176,23 @@ switch (REQURL[1]) {
 			header('location: /');
 		}
 	break;
+	case 'test':
+		$todo=new Todo();
+		$email=$TodoApp->user->email;
+		$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db);
+		if ($perm) {
+			echo '<br> Permission: '.$perm;
+		}
+	break;
 	case 'share':
 		if (is_numeric(REQURL[2])) {
-	 		if (filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)) {
+	 		if (filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL) && is_numeric($_REQUEST['permission'])) {
+	 			$permission=[1,2];
+	 			if (!in_array($_REQUEST['permission'])) {
+					header('location: /');
+	 			}
 				try {
+					$todo = $TodoApp->db->getRepository('entities\Share')->findOneBy(['id' =>REQURL[2]]);
 					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
 					$user=$todo->getUser();
 					if(is_object($todo) && $user->getId() == $TodoApp->user->id){
@@ -221,7 +229,7 @@ switch (REQURL[1]) {
 			$url['edit']="/api/edit/";
 			$url['save']="/api/save/";
 			$url['remove']="/api/remove/";
-			$url['remove']="/api/share/";
+			$url['share']="/api/share/";
 			echo json_encode($url,JSON_UNESCAPED_UNICODE);
 		} else {
 			header('location: /404');

@@ -24,6 +24,11 @@ class Share
      */
     private $user_email;
 
+    /**
+     * @Column(type="smallint")
+     */
+    private $todolist_id;
+
 
     /**
      * Get id.
@@ -57,36 +62,6 @@ class Share
     public function getPermission()
     {
         return $this->permission;
-    }
-    /**
-     * @ManyToOne(targetEntity="Todolist", inversedBy="share")
-     * @JoinColumn(name="todolist_id", referencedColumnName="id", nullable=false)
-     * @var \entities\User
-     */
-    private $todolist;
-
-    /**
-     * Set todolist.
-     *
-     * @param \entities\Todolist $todolist
-     *
-     * @return Share
-     */
-    public function setTodolist(\entities\Todolist $todolist)
-    {
-        $this->todolist = $todolist;
-
-        return $this;
-    }
-
-    /**
-     * Get todolist.
-     *
-     * @return \entities\Todolist
-     */
-    public function getTodolist()
-    {
-        return $this->todolist;
     }
 
     /**
