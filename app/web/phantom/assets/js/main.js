@@ -181,6 +181,25 @@
 						$menu._hide();
 
 			});
+
+		var action;
+		$.ajax({
+		  url: "/api/",
+		  method: "POST",
+		  data: { settings : 1},
+		  dataType: "json",
+		    xhrFields: {
+		         withCredentials: true
+		    }
+		})
+		.done(function(json) {
+			action=json;
+		    todoApp.init();
+		})
+		.fail(function() {
+			console.log( "error" );
+		});
+
 		$('#createTodolist').on('click',function (e) {
 			e.preventDefault();
 			swal({
@@ -191,7 +210,7 @@
 			.then(title => {
 			  if (!title) throw null;
 
-			  return fetch(`/todo/create?title=${title}`, {
+			  return fetch(action['create']+`?title=${title}`, {
 			  	credentials: 'include'
 			  });
 			})
@@ -232,9 +251,9 @@
 
 		$('.action li a').on('click',function (e) {
 			e.preventDefault();
-			let action = $(this).data('id');
-			action = action.split( '-' );
-			switch (action[0]) {
+			let actionID = $(this).data('id');
+			actionID = actionID.split( '-' );
+			switch (actionID[0]) {
 			 	case 'remove':
 				 	swal({
 						title: "Are you sure?",
@@ -246,7 +265,7 @@
 					.then((willDelete) => {
 						if (willDelete) {
 							$.ajax({
-							    url: "/todo/remove/"+action[1],
+							    url: action["remove"]+actionID[1],
 							    type: "GET",
 							    dataType: 'json',
 							    xhrFields: {
@@ -265,7 +284,7 @@
 					                    //     window.location.replace("/");
 					                    //     window.location.href = "/";
 					                    // },2500);
-					                    $('article#todo-'+action[1]).remove();
+					                    $('article#todo-'+actionID[1]).remove();
 								 	break;
 								}
 							})
@@ -281,7 +300,7 @@
 			 		break;
 			 	default:
 			 		break;
-			 }
+			}
 
 		});
 
