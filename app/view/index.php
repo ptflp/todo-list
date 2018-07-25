@@ -73,7 +73,7 @@
 									}
 									if ($i>9){$b='';}
 								?>
-									<article class="style7">
+									<article class="style7" id="todo-<?=$todo->getId();?>">
 										<span class="image">
 											<img src="/phantom/images/pic<?=$b.$i++?>.jpg" alt="" />
 										</span>

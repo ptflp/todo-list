@@ -260,13 +260,12 @@
 											title: 'Success!',
 											text: 'Poof! Your todolist has been removed!',
 											icon: 'success',
-											closeOnClickOutside: false,
-											button: false
 										});
-					                    setTimeout(function () {
-					                        window.location.replace("/");
-					                        window.location.href = "/";
-					                    },2500);
+					                    // setTimeout(function () {
+					                    //     window.location.replace("/");
+					                    //     window.location.href = "/";
+					                    // },2500);
+					                    $('article#todo-'+action[1]).remove();
 								 	break;
 								}
 							})
