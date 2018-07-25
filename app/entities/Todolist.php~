@@ -140,4 +140,9 @@ class Todolist
     {
         return $this->user;
     }
+    /**
+     * @OneToMany(targetEntity="Share", mappedBy="todolist", cascade={"all"}, orphanRemoval=true)
+     * @var Doctrine\Common\Collection\ArrayCollection
+     */
+    private $share;
 }

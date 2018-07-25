@@ -130,4 +130,45 @@ class User
     {
         return $this->todolist;
     }
+    /**
+     * @OneToMany(targetEntity="Share", mappedBy="user", cascade={"all"}, orphanRemoval=true)
+     * @var Doctrine\Common\Collection\ArrayCollection
+     */
+    private $share;
+
+    /**
+     * Add share.
+     *
+     * @param \entities\Share $share
+     *
+     * @return User
+     */
+    public function addShare(\entities\Share $share)
+    {
+        $this->share[] = $share;
+
+        return $this;
+    }
+
+    /**
+     * Remove share.
+     *
+     * @param \entities\Share $share
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeShare(\entities\Share $share)
+    {
+        return $this->share->removeElement($share);
+    }
+
+    /**
+     * Get share.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getShare()
+    {
+        return $this->share;
+    }
 }
