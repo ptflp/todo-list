@@ -10,17 +10,22 @@ switch (REQURL[1]) {
 				// $TodoApp->db->persist($user);
 				$user=$TodoApp->user->db;
 				$TodoApp->db->persist($user);
-				// Create a new task
-				$task = (new entities\Todolist())
+				// Create a new todolist
+				$todo = (new entities\Todolist())
 				    ->setTitle($_REQUEST['title'])
 				    ->setTasks("[]")
 				    ->setUser($user)
 				    ->setDate(new DateTime());
+				$share = (new entities\Share())
+				    ->setPermission('0')
+				    ->setUserEmail($user->getEmail())
+				    ->setTodolist($todo);
+				$todo->addShare($share);
 
-				// Add the task the to list of the User tasks. Since we used cascade={"all"}, we
-				// don't need to persist the task separately: it will be persisted when persisting
+				// Add the todolist the to list of the User tasks. Since we used cascade={"all"}, we
+				// don't need to persist the todolist separately: it will be persisted when persisting
 				// the User
-				$user->addTodolist($task);
+				$user->addTodolist($todo);
 
 				// Finally flush and execute the database transaction
 				$TodoApp->db->flush();
@@ -115,12 +120,19 @@ switch (REQURL[1]) {
 		if (is_numeric(REQURL[2])) {
 			try {
 				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
-				$user=$todo->getUser();
-				if(is_object($todo) && $user->getId() == $TodoApp->user->id){
-					$msg['success']=1;
-					$msg['title']=$todo->getTitle();
-					$msg['data']=json_decode($todo->getTasks());
-					echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+				$todoID = $todo->getShare();
+				$key = array_search($TodoApp->user->email, object_column($share, 'user_email'));
+				if(is_object($todo)){
+					if ($key) {
+						$msg['success']=1;
+						$msg['title']=$todo->getTitle();
+						$msg['data']=json_decode($todo->getTasks());
+						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+					} else {
+						$msg['success']=0;
+						$msg['error']='nope';
+						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+					}
 				} else {
 					$msg['success']=0;
 					$msg['error']='nope';
@@ -158,6 +170,39 @@ switch (REQURL[1]) {
 			header('location: /');
 		}
 	break;
+	case 'share':
+		if (is_numeric(REQURL[2])) {
+	 		if (filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)) {
+				try {
+					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
+					$user=$todo->getUser();
+					if(is_object($todo) && $user->getId() == $TodoApp->user->id){
+						$TodoApp->db->persist($todo);
+						$share = (new entities\Share())
+						    ->setPermission($_REQUEST['permission'])
+						    ->setUserEmail($_REQUEST['email'])
+						    ->setTodolist($todo);
+						$todo->addShare($share);
+						$TodoApp->db->flush();
+						$msg['success']=1;
+						$msg['title']=$todo->getTitle();
+						$msg['data']=json_decode($todo->getTasks());
+						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+					} else {
+						$msg['success']=0;
+						$msg['error']='nope';
+						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+					}
+				} catch (Doctrine\DBAL\DBALException $e) {
+						$msg['success']=0;
+						$msg['error']='nope';
+						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+				}
+			}
+		} else {
+			header('location: /');
+		}
+	break;
 	default:
 		if($_REQUEST['settings']) {
 			$url['create']="/api/create/";
@@ -165,6 +210,7 @@ switch (REQURL[1]) {
 			$url['edit']="/api/edit/";
 			$url['save']="/api/save/";
 			$url['remove']="/api/remove/";
+			$url['remove']="/api/share/";
 			echo json_encode($url,JSON_UNESCAPED_UNICODE);
 		} else {
 			header('location: /404');
