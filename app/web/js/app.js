@@ -3,6 +3,7 @@
 	var li,div,inputC,inputT,label,button,
 	tasksList=document.getElementsByClassName('todo-list')[0];
 	var tasks = [];
+	var action;
 	var todoApp = {
 		oneTime: 0,
 		init: function () { // инициализация движка / engine initialization
@@ -50,7 +51,7 @@
 			});
 		},
 		filterHandler: function () { // выделение активной ссылки по нажатию / activate on click link in filter area
-			$('.filters li a').on('click',function () {
+			$(window).on('hashchange', function() {
 				$('.filters li a').removeClass('selected');
 				$(this).addClass('selected');
 				let href = $(this).attr('href');
@@ -121,7 +122,7 @@
 		getData: function () { // получение данных
 			var pathArray = window.location.pathname.split( '/' );
 			$.ajax({
-			    url: "/todo/action/get/"+pathArray[2],
+			    url: action['get']+pathArray[2],
 			    type: "GET",
 			    dataType: 'json',
 			    xhrFields: {
@@ -133,25 +134,18 @@
 					tasks=json.data;
 				}
 				todoApp.render();
+				todoApp.tasksCount();
 				todoApp.initHandlers();
 			})
 			.fail(function() {
 				console.log( "error" );
 			});
-			// var json=localStorage.getItem("tasks");
-			if (tasks.length==0) {
-				// tasks = [{title: 'Test',complete: false},{title: 'Test12',complete: false},{title: 'Test2',complete: false},{title: 'Test43',complete: false},{title: 'Test32',complete: false}];
-				// let firstTask = {title: 'Test',complete: false};
-				// let secondTask = {title: 'Test2',complete: true};
-				// tasks.push(firstTask);
-				// tasks.push(secondTask);
-			}
 		},
 		saveData: function () { // запись данных
 			var pathArray = window.location.pathname.split( '/' );
 			localStorage.setItem("tasks", JSON.stringify(tasks));
 			$.ajax({
-			  url: "/todo/action/save/"+pathArray[2],
+			  url: action['save']+pathArray[2],
 			  method: "POST",
 			  data: { data : JSON.stringify(tasks) },
 			  dataType: "html",
@@ -220,6 +214,7 @@
 						}
 					    break;
 					  default:
+					  	todoApp.filterActive('#/');
 					    tasksTemp=tasks;
 					    break;
 					}
@@ -271,7 +266,21 @@
 			}
 		}
 	}
-	todoApp.init();
+	$.ajax({
+	  url: "/api/",
+	  method: "POST",
+	  data: { settings : 1},
+	  dataType: "json",
+	    xhrFields: {
+	         withCredentials: true
+	    }
+	})
+	.done(function(json) {
+		action=json;
+	    todoApp.init();
+	})
+	.fail(function() {
+		console.log( "error" );
+	});
 	// Your starting point. Enjoy the ride!
-
 })(window);

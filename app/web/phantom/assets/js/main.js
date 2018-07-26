@@ -181,6 +181,90 @@
 						$menu._hide();
 
 			});
+
+
+
+
+//*
+/*
+* Additional ptflp code
+*
+*
+*/
+
+		var action;
+		var actionID;
+ 		// Get the modal
+		var modal = document.getElementById('myModal');
+
+		// Get the <span> element that closes the modal
+		var span = document.getElementsByClassName("close")[0];
+
+
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function() {
+		    modal.style.display = "none";
+		}
+
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function(event) {
+		    if (event.target == modal) {
+		        modal.style.display = "none";
+		    }
+		}
+
+ 		$('form#share-me').on('submit', function (e) {
+	        e.preventDefault();
+	        var datastring = $(this).serialize();
+	        console.log(actionID);
+	        $.ajax({
+	            type: "POST",
+	            url: action["share"]+actionID[1]+'?'+datastring,
+	            data: datastring,
+	            dataType: "json",
+	            success: function(data) {
+						modal.style.display = "none";
+	                switch(data.success) {
+	                  case 0:
+	                    swal("Error!", data.error, "error");
+	                    break;
+	                  case 1:
+	                	console.log(data);
+	                	var perm;
+	                	switch(data.permission){
+	                		case "2":
+	                			perm="Read/Write";
+	                		break;
+	                		case "3":
+	                			perm="Read";
+	                		break;
+	                	}
+	                    swal("Success!", 'User '+data.email+' added with permission: '+perm+' to: '+ data.title, "success");
+	                    break;
+	                }
+	            },
+	            error: function() {
+	                swal("Oh noes!", "Please type username! ", "error");
+	            }
+	        });
+ 		});
+		$.ajax({
+		  url: "/api/",
+		  method: "POST",
+		  data: { settings : 1},
+		  dataType: "json",
+		    xhrFields: {
+		         withCredentials: true
+		    }
+		})
+		.done(function(json) {
+			console.log(json);
+			action=json;
+		})
+		.fail(function() {
+			console.log( "error" );
+		});
+
 		$('#createTodolist').on('click',function (e) {
 			e.preventDefault();
 			swal({
@@ -191,7 +275,7 @@
 			.then(title => {
 			  if (!title) throw null;
 
-			  return fetch(`/todo/create?title=${title}`, {
+			  return fetch(action['create']+`?title=${title}`, {
 			  	credentials: 'include'
 			  });
 			})
@@ -210,6 +294,8 @@
 						title: 'Success!',
 						text: 'todolist added',
 						icon: 'success',
+						closeOnClickOutside: false,
+						button: false
 					});
                     setTimeout(function () {
                         window.location.replace("/");
@@ -230,7 +316,115 @@
 
 		$('.action li a').on('click',function (e) {
 			e.preventDefault();
-			console.log($(this).data('id'));
+			actionID = $(this).data('id');
+			actionID = actionID.split( '-' );
+			switch (actionID[0]) {
+			 	case 'remove':
+				 	swal({
+						title: "Are you sure?",
+						text: "Once deleted, you will not be able to recover this todolist!",
+						icon: "warning",
+						buttons: true,
+						dangerMode: true,
+					})
+					.then((willDelete) => {
+						if (willDelete) {
+							$.ajax({
+							    url: action["remove"]+actionID[1],
+							    type: "GET",
+							    dataType: 'json',
+							    xhrFields: {
+							         withCredentials: true
+							    }
+							})
+							.done(function(json) {
+								switch (json.success) {
+								 	case 1:
+										swal({
+											title: 'Success!',
+											text: 'Poof! Your todolist has been removed!',
+											icon: 'success',
+										});
+					                    // setTimeout(function () {
+					                    //     window.location.replace("/");
+					                    //     window.location.href = "/";
+					                    // },2500);
+					                    $('article#todo-'+actionID[1]).remove();
+								 	break;
+								}
+							})
+							.fail(function() {
+								swal("Oh noes!", "The AJAX request failed! " + err, "error");
+							});
+						} else {
+							swal("Your todolist safe!");
+						}
+					});
+			 	break;
+			 	case 'edit':
+
+					$.ajax({
+					    url: action["get"]+actionID[1],
+					    type: "GET",
+					    dataType: 'json',
+					    xhrFields: {
+					         withCredentials: true
+					    }
+					})
+					.done(function(json) {
+						swal({
+						  title: 'Edit title',
+						  content: {
+						    element: "input",
+						    attributes: {
+						      type: "text",
+						      value: json.title
+						    },
+						  },
+						})
+						.then(title => {
+						  if (!title) throw null;
+							$.ajax({
+							    url: action["edit"]+actionID[1]+"?title="+title,
+							    type: "GET",
+							    dataType: 'json',
+							    xhrFields: {
+							         withCredentials: true
+							    }
+							})
+							.done(function(json) {
+								switch (json.success) {
+								 	case 1:
+										swal({
+											title: 'Success!',
+											text: 'Poof! Your todolist title now is ' + json.title,
+											icon: 'success',
+										});
+					                    $('article#todo-'+actionID[1]).find('h2').html(json.title);
+								 	break;
+								}
+							})
+							.fail(function(err) {
+								swal("Oh noes!", "The AJAX request failed! " + JSON.stringify(err), "error");
+							});
+						});
+	                    // setTimeout(function () {
+	                    //     window.location.replace("/");
+	                    //     window.location.href = "/";
+	                    // },2500);
+					})
+					.fail(function() {
+						swal("Oh noes!", "The AJAX request failed! " + err, "error");
+					});
+			 		break;
+			 	case 'share':
+			 		modal.style.display = "block";
+				break;
+			 	default:
+
+			 		break;
+			}
+
 		});
 
 })(jQuery);

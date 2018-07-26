@@ -122,7 +122,13 @@
                     swal("Error!", data.error, "error");
                     break;
                   case "1":
-                    swal("Success!", 'authorization successfull', "success");
+                    swal({
+                        title: 'Success!',
+                        text: 'authorization successfull',
+                        icon: 'success',
+                        closeOnClickOutside: false,
+                        button: false
+                    });
                     setTimeout(function () {
                         window.location.replace("/");
                         window.location.href = "/";
@@ -151,7 +157,13 @@
                     swal("Error!", data.error, "error");
                     break;
                   case "1":
-                    swal("Success!", 'registration successfull', "success");
+                    swal({
+                        title: 'Success!',
+                        text: 'registration successfull',
+                        icon: 'success',
+                        closeOnClickOutside: false,
+                        button: false
+                    });
                     setTimeout(function () {
                         window.location.replace("/");
                         window.location.href = "/";

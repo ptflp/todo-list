@@ -64,7 +64,6 @@
 									</a>
 								</article>
 								<?php
-								$todolist=$TodoApp->user->db->getTodolist();
 								$i=2;
 								foreach ($todolist as $todo):
 									$b=0;
@@ -73,7 +72,7 @@
 									}
 									if ($i>9){$b='';}
 								?>
-									<article class="style7">
+									<article class="style7" id="todo-<?=$todo->getId();?>">
 										<span class="image">
 											<img src="/phantom/images/pic<?=$b.$i++?>.jpg" alt="" />
 										</span>
@@ -88,6 +87,46 @@
 									</article>
 								<?php endforeach; ?>
 							</section>
+							<?php
+							if (is_array($shared['todo'])&&!empty($shared['todo'])): ?>
+							<header>
+								<h1>User shared tasks list</a>
+							</header>
+							<section class="tiles">
+								<?php
+								$i=2;
+								foreach ($shared['todo'] as $todo):
+									$id=$todo->getId();
+									$perm=$shared['perm'][$id];
+									switch ($perm) {
+										case 2:
+											$perm='Read/Write';
+											break;
+										
+										default:
+											$perm='Read';
+											break;
+									}
+									$b=0;
+									if ($i>12) {
+										$i=2;
+									}
+									if ($i>9){$b='';}
+								?>
+									<article class="style7" id="todo-<?=$id;?>">
+										<span class="image">
+											<img src="/phantom/images/pic<?=$b.$i++?>.jpg" alt="" />
+										</span>
+										<a href="/todo/<?=$todo->getId();?>">
+											<h2><?=$todo->getTitle();?></h2>
+										</a>
+										<ul class="icons action">
+											<li><a href="#" class="style2 share" style="background: #ffffffa1;"><span class="label"><?=$perm?></span></a></li>
+										</ul>
+									</article>
+								<?php endforeach; ?>
+							</section>
+							<?php endif; ?>
 						</div>
 					</div>
 
@@ -110,6 +149,25 @@
 
 			</div>
 
+			<!-- The Modal -->
+			<div id="myModal" class="modal">
+
+			  <!-- Modal content -->
+			  <div class="modal-content">
+			    <span class="close">&times;</span>
+			    <p>Share your todolist with users</p>
+			    <form id="share-me">
+					<input name="email" class="swal-content__input" type="email" placeholder="Enter user email address">
+					<select name="permission">
+						<option disabled>Choose permission</option>
+						<option value="2">Read/Write</option>
+						<option value="3">Read</option>
+					</select>
+					<button class="p-t-12" type="submit" style="float: right;">Ok</button>
+			    </form>
+			  </div>
+
+			</div>
 		<!-- Scripts -->
 			<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 			<script src="/phantom/assets/js/jquery.min.js"></script>

@@ -82,7 +82,7 @@ class User
         return $this->password;
     }
     /**
-     * @OneToMany(targetEntity="Todolist", mappedBy="user", cascade={"all"})
+     * @OneToMany(targetEntity="Todolist", mappedBy="user", cascade={"all"}, orphanRemoval=true)
      * @var Doctrine\Common\Collection\ArrayCollection
      */
     private $todolist;
