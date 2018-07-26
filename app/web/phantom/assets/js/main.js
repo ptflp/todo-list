@@ -406,7 +406,7 @@
 				                }
 				            },
 				            error: function() {
-				                alert('error handing here');
+				                swal("Oh noes!", "Please type username! ", "error");
 				            }
 				        });
 			 		});
