@@ -132,15 +132,10 @@ switch (REQURL[1]) {
 				if ($perm==1) {
 					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' => REQURL[2]]);
 					if(is_object($todo)){
-						$access=false;
-						if ($access) {
-							$msg['success']=1;
-							$msg['title']=$todo->getTitle();
-							$msg['data']=json_decode($todo->getTasks());
-							echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-						} else {
-						msgError();
-						}
+						$msg['success']=1;
+						$msg['title']=$todo->getTitle();
+						$msg['data']=json_decode($todo->getTasks());
+						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 					} else {
 						msgError();
 					}
