@@ -121,7 +121,7 @@
 											<h2><?=$todo->getTitle();?></h2>
 										</a>
 										<ul class="icons action">
-											<li><a href="#" class="style2 share"><span class="label"><?=$perm?></span></a></li>
+											<li><a href="#" class="style2 share" style="background: #ffffffa1;"><span class="label"><?=$perm?></span></a></li>
 										</ul>
 									</article>
 								<?php endforeach; ?>
