@@ -88,27 +88,41 @@
 								<?php endforeach; ?>
 							</section>
 							<?php
-							if (is_array($sharedlist)&&!empty($sharedlist)): ?>
+							if (is_array($shared['todo'])&&!empty($shared['todo'])): ?>
 							<header>
 								<h1>User shared tasks list</a>
 							</header>
 							<section class="tiles">
 								<?php
 								$i=2;
-								foreach ($sharedlist as $todo):
+								foreach ($shared['todo'] as $todo):
+									$id=$todo->getId();
+									$perm=$shared['perm'][$id];
+									switch ($perm) {
+										case 2:
+											$perm='Read/Write';
+											break;
+										
+										default:
+											$perm='Read';
+											break;
+									}
 									$b=0;
 									if ($i>12) {
 										$i=2;
 									}
 									if ($i>9){$b='';}
 								?>
-									<article class="style7" id="todo-<?=$todo->getId();?>">
+									<article class="style7" id="todo-<?=$id;?>">
 										<span class="image">
 											<img src="/phantom/images/pic<?=$b.$i++?>.jpg" alt="" />
 										</span>
 										<a href="/todo/<?=$todo->getId();?>">
 											<h2><?=$todo->getTitle();?></h2>
 										</a>
+										<ul class="icons action">
+											<li><a href="#" class="style2 share"><span class="label"><?=$perm?></span></a></li>
+										</ul>
 									</article>
 								<?php endforeach; ?>
 							</section>

@@ -10,7 +10,17 @@
  	{
 		$perm=$this->checkPermByEmail($todolist_id,$user_email,$db);
 		if ($perm) {
-			$share = $db->getRepository('entities\Share')->findOneBy(['user_email' =>$user_email]);
+ 			$query=$db->createQueryBuilder();
+		    $result = $query->select('p')
+	            ->from('entities\Share', 'p')
+	            ->where('p.user_email= :user_email')
+	            ->setParameter('user_email', $user_email)
+	            ->andWhere('p.todolist_id= :todolist_id')
+	            ->setParameter('todolist_id', $todolist_id)
+	            ->getQuery()
+	            ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+	        $id=$result[0]['id'];
+			$share = $db->getRepository('entities\Share')->findOneBy(['id' =>$id]);
 			$share->setPermission($permission);
 			$db->merge($share);
 			$db->flush();
@@ -74,11 +84,15 @@
  		$email=$user->getEmail();
  		$shared = $db->getRepository('entities\Share')->findBy(['user_email' => $email]);
  		$arrItems=[];
+ 		$perm=[];
  		foreach ($shared as $item) {
- 			$arrItems[]=$item->getTodolistId();
+ 			$id=$item->getTodolistId();
+ 			$arrItems[]=$id;
+ 			$perm[$id]=$item->getPermission();
  		}
- 		$todo = $db->getRepository('entities\Todolist')->findBy(['id' => $arrItems]);
- 		return $todo;
+ 		$data['perm']=$perm;
+ 		$data['todo'] = $db->getRepository('entities\Todolist')->findBy(['id' => $arrItems]);
+ 		return $data;
  	}
 
  }

@@ -6,10 +6,12 @@ switch (REQURL[1]) {
 	default:
 		if (is_numeric(REQURL[1])) {
 			try {
-				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' => REQURL[1]]);
-				if($todo){
-					$user=$todo->getUser();
-					if($user->getId() == $TodoApp->user->id) {
+				$todo=new Todo();
+				$email=$TodoApp->user->email;
+				$perm=$todo->checkPermByEmail(REQURL[1],$email,$TodoApp->db); // Check perm for writing
+				if ($perm) {
+					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' => REQURL[1]]);
+					if($todo){
 						require('../view/todo.php');
 					} else {
 						header('location: /');

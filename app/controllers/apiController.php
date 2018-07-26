@@ -83,30 +83,26 @@ switch (REQURL[1]) {
 				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
 				if($todo){
 					$user=$todo->getUser();
-					if($user->getId() == $TodoApp->user->id) {
-						$array=json_decode($_REQUEST['data']);
-						if (is_array($array)) {
-							$arr=[];
-							$i=0;
-							foreach ($array as $key => $value) {
-								$item = new stdClass();
-								$item->title=$value->title;
-								$item->complete=$value->complete;
-								$item->id=$value->id;
-								if($value->title && mb_strlen($value->id)== 17 && is_bool($value->complete)){
-									$arr[]=$item;
-								}
+					$array=json_decode($_REQUEST['data']);
+					if (is_array($array)) {
+						$arr=[];
+						$i=0;
+						foreach ($array as $key => $value) {
+							$item = new stdClass();
+							$item->title=$value->title;
+							$item->complete=$value->complete;
+							$item->id=$value->id;
+							if($value->title && mb_strlen($value->id)== 17 && is_bool($value->complete)){
+								$arr[]=$item;
 							}
-							$json=json_encode($arr);
-							$todo->setTasks($json);
-							$TodoApp->db->merge($todo);
-							$TodoApp->db->flush();
-							echo $json;
-						} else {
-							header('location: /');
 						}
+						$json=json_encode($arr);
+						$todo->setTasks($json);
+						$TodoApp->db->merge($todo);
+						$TodoApp->db->flush();
+						echo $json;
 					} else {
-						msgError();
+						header('location: /');
 					}
 				} else {
 					header('location: /');
@@ -174,7 +170,8 @@ switch (REQURL[1]) {
 	case 'test':
 		$todo=new Todo();
 		$user=$TodoApp->db->getRepository('entities\User')->findOneBy(['email' => 'no@no.no']);
-		$todo->getShared($user,$TodoApp->db);
+		$shared=$todo->getShared($user,$TodoApp->db);
+		dump_r($shared);
 	break;
 	case 'share':
 		if (is_numeric(REQURL[2])) {

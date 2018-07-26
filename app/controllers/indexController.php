@@ -4,5 +4,6 @@ if (empty($_SESSION['uid'])) {
 }
 $todolist=$TodoApp->user->db->getTodolist();
 $todo=new Todo;
-$sharedlist=$todo->getShared($TodoApp->user->db,$TodoApp->db);
+$shared=$todo->getShared($TodoApp->user->db,$TodoApp->db);
+// dump_r($shared);
 include('../view/index.php');
