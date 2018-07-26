@@ -110,6 +110,25 @@
 
 			</div>
 
+			<!-- The Modal -->
+			<div id="myModal" class="modal">
+
+			  <!-- Modal content -->
+			  <div class="modal-content">
+			    <span class="close">&times;</span>
+			    <p>Share your todolist with users</p>
+			    <form id="share-me">
+					<input name="email" class="swal-content__input" type="email" placeholder="Enter user email address">
+					<select name="permission">
+						<option disabled>Choose permission</option>
+						<option value="2">Read/Write</option>
+						<option value="3">Read</option>
+					</select>
+					<button class="p-t-12" type="submit" style="float: right;">Ok</button>
+			    </form>
+			  </div>
+
+			</div>
 		<!-- Scripts -->
 			<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 			<script src="/phantom/assets/js/jquery.min.js"></script>

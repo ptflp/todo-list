@@ -183,6 +183,24 @@
 			});
 
 		var action;
+ 		// Get the modal
+		var modal = document.getElementById('myModal');
+
+		// Get the <span> element that closes the modal
+		var span = document.getElementsByClassName("close")[0];
+
+
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function() {
+		    modal.style.display = "none";
+		}
+
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function(event) {
+		    if (event.target == modal) {
+		        modal.style.display = "none";
+		    }
+		}
 		$.ajax({
 		  url: "/api/",
 		  method: "POST",
@@ -193,6 +211,7 @@
 		    }
 		})
 		.done(function(json) {
+			console.log(json);
 			action=json;
 		})
 		.fail(function() {
@@ -306,8 +325,6 @@
 					    }
 					})
 					.done(function(json) {
-						let input = document.createElement('input');
-						input.value = json.title;
 						swal({
 						  title: 'Edit title',
 						  content: {
@@ -357,7 +374,94 @@
 						swal("Oh noes!", "The AJAX request failed! " + err, "error");
 					});
 			 		break;
+			 	case 'share':
+			 		modal.style.display = "block";
+			 		$('form#share-me').on('submit', function (e) {
+				        e.preventDefault();
+				        var datastring = $(this).serialize();
+				        $.ajax({
+				            type: "POST",
+				            url: action["share"]+actionID[1]+'?'+datastring,
+				            data: datastring,
+				            dataType: "json",
+				            success: function(data) {
+		   						modal.style.display = "none";
+				                switch(data.success) {
+				                  case 0:
+				                    swal("Error!", data.error, "error");
+				                    break;
+				                  case 1:
+				                	console.log(data);
+				                	var perm;
+				                	switch(data.permission){
+				                		case "2":
+				                			perm="Read/Write";
+				                		break;
+				                		case "3":
+				                			perm="Read";
+				                		break;
+				                	}
+				                    swal("Success!", 'User '+data.email+' added with permission: '+perm+' to: '+ data.title, "success");
+				                    break;
+				                }
+				            },
+				            error: function() {
+				                alert('error handing here');
+				            }
+				        });
+			 		});
+				break;
+				case 'other':
+		 			let input = document.createElement('input');
+		 			input.className="swal-content__input action-share";
+		 			input.onchange = function(){
+		 				$('.action-share').val();
+		 			};
+		 			input.onclick = function () {
+		 				alet('123');
+		 			}
+		 			$('.action-share');
+					swal({
+					  title: 'Type user email',
+					  content: input
+					})
+					.then((email) => {
+						console.log(email);
+						console.log(action["share"]+actionID[1]+'?email='+email);
+						if (email) {
+							$.ajax({
+							    url: action["share"]+actionID[1]+'?email='+email,
+							    type: "GET",
+							    dataType: 'json',
+							    xhrFields: {
+							         withCredentials: true
+							    }
+							})
+							.done(function(json) {
+								console.log(json);
+								switch (json.success) {
+								 	case 1:
+										swal({
+											title: 'Success!',
+											text: 'Poof! Your todolist has been removed!',
+											icon: 'success',
+										});
+					                    // setTimeout(function () {
+					                    //     window.location.replace("/");
+					                    //     window.location.href = "/";
+					                    // },2500);
+					                    $('article#todo-'+actionID[1]).remove();
+								 	break;
+								}
+							})
+							.fail(function(err) {
+								swal("Oh noes!", "The AJAX request failed! " + JSON.stringify(err), "error");
+							});
+						}
+					});
+			 	break;
 			 	default:
+
 			 		break;
 			}
 
