@@ -171,6 +171,11 @@ switch (REQURL[1]) {
 			header('location: /');
 		}
 	break;
+	case 'test':
+		$todo=new Todo();
+		$user=$TodoApp->db->getRepository('entities\User')->findOneBy(['email' => 'no@no.no']);
+		$todo->getShared($user,$TodoApp->db);
+	break;
 	case 'share':
 		if (is_numeric(REQURL[2])) {
 	 		if (filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL) && is_numeric($_REQUEST['permission'])) {

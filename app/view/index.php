@@ -64,7 +64,6 @@
 									</a>
 								</article>
 								<?php
-								$todolist=$TodoApp->user->db->getTodolist();
 								$i=2;
 								foreach ($todolist as $todo):
 									$b=0;
@@ -88,6 +87,32 @@
 									</article>
 								<?php endforeach; ?>
 							</section>
+							<?php
+							if (is_array($sharedlist)&&!empty($sharedlist)): ?>
+							<header>
+								<h1>User shared tasks list</a>
+							</header>
+							<section class="tiles">
+								<?php
+								$i=2;
+								foreach ($sharedlist as $todo):
+									$b=0;
+									if ($i>12) {
+										$i=2;
+									}
+									if ($i>9){$b='';}
+								?>
+									<article class="style7" id="todo-<?=$todo->getId();?>">
+										<span class="image">
+											<img src="/phantom/images/pic<?=$b.$i++?>.jpg" alt="" />
+										</span>
+										<a href="/todo/<?=$todo->getId();?>">
+											<h2><?=$todo->getTitle();?></h2>
+										</a>
+									</article>
+								<?php endforeach; ?>
+							</section>
+							<?php endif; ?>
 						</div>
 					</div>
 

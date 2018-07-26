@@ -69,5 +69,16 @@
  			echo 'error';
  		}
  	}
+ 	public function getShared($user,$db)
+ 	{
+ 		$email=$user->getEmail();
+ 		$shared = $db->getRepository('entities\Share')->findBy(['user_email' => $email]);
+ 		$arrItems=[];
+ 		foreach ($shared as $item) {
+ 			$arrItems[]=$item->getTodolistId();
+ 		}
+ 		$todo = $db->getRepository('entities\Todolist')->findBy(['id' => $arrItems]);
+ 		return $todo;
+ 	}
 
  }
