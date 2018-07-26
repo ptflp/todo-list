@@ -8,6 +8,8 @@ Installation
 ------------
 copy file docker-compose.yml.stage to docker-compose.yml then
 ```
+git clone https://github.com/ptflp/todo-list.git
+cd todo-list
 git pull ptflp/yii2-basic-app:v3
 docker volume create appdb
 docker network create skynet
