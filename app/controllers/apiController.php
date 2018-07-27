@@ -168,10 +168,8 @@ switch (REQURL[1]) {
 		}
 	break;
 	case 'test':
-		$todo=new Todo();
-		$user=$TodoApp->db->getRepository('entities\User')->findOneBy(['email' => 'no@no.no']);
-		$shared=$todo->getShared($user,$TodoApp->db);
-		dump_r($shared);
+		$m = new Mustache_Engine;
+		echo $m->render('Hello {{planet}}', array('planet' => 'World!'));
 	break;
 	case 'share':
 		if (is_numeric(REQURL[2])) {
