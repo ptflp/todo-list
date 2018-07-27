@@ -6,6 +6,7 @@
  {
  	public $db;
  	public $data;
+ 	public $mustache;
  	public function setPermission($todolist_id,$user_email,$permission,$db)
  	{
 		$perm=$this->checkPermByEmail($todolist_id,$user_email,$db);
@@ -92,7 +93,30 @@
  		}
  		$data['perm']=$perm;
  		$data['todo'] = $db->getRepository('entities\Todolist')->findBy(['id' => $arrItems]);
- 		return $data;
+		$sharedList=[];
+		foreach ($data['todo'] as $todo){
+			$id=$todo->getId();
+			$perm=$data['perm'][$id];
+			switch ($perm) {
+				case 2:
+					$perm='Read/Write';
+					break;
+				default:
+					$perm='Read';
+					break;
+			}
+			$sharedList[]=['title'=>$todo->getTitle(),'id'=>$todo->getId(),'perm'=>$perm];
+		}
+ 		return $sharedList;
+ 	}
+ 	public function getUserTodo($user)
+ 	{
+		$data=$user->getTodolist();
+		$todoList=[];
+		foreach ($data as $todo) {
+			$todoList[]=['title'=>$todo->getTitle(),'id'=>$todo->getId()];
+		}
+		return $todoList;
  	}
 
  }
