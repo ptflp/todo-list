@@ -1,6 +1,7 @@
 {
     "require": {
         "doctrine/orm": "^2.6",
-        "leeoniya/dump-r": "dev-master"
+        "leeoniya/dump-r": "dev-master",
+        "mustache/mustache": "^2.12"
     }
 }
