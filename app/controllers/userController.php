@@ -1,6 +1,12 @@
 <?php
-switch (REQURL[1]) {
-	case 'login':
+use res\Controller;
+/**
+ * Controller
+ */
+class UserController extends Controller
+{
+	public function actionLogin($id=false)
+	{
 		if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
 			$user = $TodoApp->user;
 			$db = $TodoApp->db;
@@ -20,12 +26,14 @@ switch (REQURL[1]) {
 			}
 			include('../view/login.php');
 		}
-	break;
-	case 'logout':
+	}
+	public function actionLogout()
+	{
 		$TodoApp->user->logout();
 		header('location: /user/login');
-	break;
-	case 'register':
+	}
+	public function register()
+	{
 		if ($TodoApp->user->isAuthorized()) {
 			header('location: /');
 		}
@@ -45,9 +53,5 @@ switch (REQURL[1]) {
 		} else {
 			include('../view/register.php');
 		}
-	break;
-
-	default:
-		require('404.php');
-	break;
+	}
 }

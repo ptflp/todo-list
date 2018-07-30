@@ -1,15 +1,12 @@
 <?php
-if (!$TodoApp->user->isAuthorized()) {
-	header('location: /user/login');
-}
-function msgError()
+use res\Controller;
+/**
+ * Controller
+ */
+class ApiController extends Controller
 {
-	$msg['success']=0;
-	$msg['error']='nope';
-	echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-}
-switch (REQURL[1]) {
-	case 'create':
+	public function actionCreate()
+	{
 		if (isset($_REQUEST['title'])) {
 			try {
 				// $user = $TodoApp->db->getRepository('entities\User')->findOneBy(['id' => $TodoApp->user->id]);
@@ -40,8 +37,9 @@ switch (REQURL[1]) {
 		} else {
 			header('location: /');
 		}
-	break;
-	case 'remove':
+	}
+	public function actionRemove()
+	{
 		if (is_numeric(REQURL[2])) {
 			try {
 				$todo=new Todo();
@@ -73,8 +71,9 @@ switch (REQURL[1]) {
 		} else {
 			header('location: /');
 		}
-	break;
-	case 'save':
+	}
+	public function actionSave()
+	{
 		if (is_numeric(REQURL[2])) {
 			$todo=new Todo();
 			$email=$TodoApp->user->email;
@@ -111,8 +110,9 @@ switch (REQURL[1]) {
 		} else {
 			header('location: /');
 		}
-	break;
-	case 'get':
+	}
+	public function actionGet()
+	{
 		if (is_numeric(REQURL[2])) {
 			try {
 				$todo=new Todo();
@@ -135,8 +135,9 @@ switch (REQURL[1]) {
 		} else {
 			header('location: /');
 		}
-	break;
-	case 'edit':
+	}
+	public function actionEdit()
+	{
 		if (is_numeric(REQURL[2])) {
 			try {
 				$todo=new Todo();
@@ -166,12 +167,14 @@ switch (REQURL[1]) {
 		} else {
 			header('location: /');
 		}
-	break;
-	case 'test':
+	}
+	public function actionTest()
+	{
 		$m = new Mustache_Engine;
 		echo $m->render('Hello {{planet}}', array('planet' => 'World!'));
-	break;
-	case 'share':
+	}
+	public function actionShare()
+	{
 		if (is_numeric(REQURL[2])) {
 	 		if (filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL) && is_numeric($_REQUEST['permission'])) {
 	 			$permission=[2,3];
@@ -201,8 +204,9 @@ switch (REQURL[1]) {
 		} else {
 			msgError();
 		}
-	break;
-	default:
+	}
+	public function actionSettings()
+	{
 		if($_REQUEST['settings']) {
 			$url['create']="/api/create/";
 			$url['get']="/api/get/";
@@ -214,5 +218,5 @@ switch (REQURL[1]) {
 		} else {
 			header('location: /404');
 		}
-	break;
+	}
 }

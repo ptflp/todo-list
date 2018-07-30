@@ -1,9 +1,15 @@
 <?php
-if (!$TodoApp->user->isAuthorized()) {
-	header('location: /user/login');
-}
-switch (REQURL[1]) {
-	default:
+use res\Controller;
+/**
+ * Controller
+ */
+class TodoController extends Controller
+{
+	public function actionIndex($id=false)
+	{
+		if (!$TodoApp->user->isAuthorized()) {
+			header('location: /user/login');
+		}
 		if (is_numeric(REQURL[1])) {
 			try {
 				$todo=new Todo();
@@ -26,5 +32,5 @@ switch (REQURL[1]) {
 		} else {
 			header('location: /');
 		}
-	break;
+	}
 }
