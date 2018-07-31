@@ -8,7 +8,6 @@ namespace res;
  	private $routes;
  	function __construct()
  	{
- 		session_start();
  		$routesPath = ROOT.'/../config/routes.php'; // get aliases
  		$this->routes = include($routesPath);
  	}
