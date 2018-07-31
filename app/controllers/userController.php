@@ -25,7 +25,7 @@ class UserController extends AppController
 				header('location: /');
 			}
 			$this->view->layout='logreg';
-			echo $this->view->muRender('logreg/login',['message'=>'Hello World']);
+			echo $this->view->muRender('logreg/login',[]);
 			// include('../view/login.php');
 		}
 	}
@@ -34,9 +34,9 @@ class UserController extends AppController
 		// $TodoApp->user->logout();
 		header('location: /user/login');
 	}
-	public function register()
+	public function actionRegister()
 	{
-		if ($TodoApp->user->isAuthorized()) {
+		if ($this->user->isAuthorized()) {
 			header('location: /');
 		}
 		if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
@@ -53,7 +53,8 @@ class UserController extends AppController
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			}
 		} else {
-			include('../view/register.php');
+			$this->view->layout='logreg';
+			echo $this->view->muRender('logreg/register',[]);
 		}
 	}
 }
