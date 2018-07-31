@@ -38,5 +38,22 @@ class AppController extends Controller
 	{
 		header('location: '.$url);
 	}
+	public function checkParam($arr)
+	{
+		if (isset($arr['id'])) {
+			if (!is_numeric($arr['id'])) {
+				$this->notFound();
+				exit();
+			}
+		}
+		if (isset($arr['request'])) {
+			foreach ($arr['request'] as $key => $value) {
+				if (!isset($_REQUEST[$value])) {
+					$this->notFound();
+					exit();
+				}
+			}
+		}
+	}
 
 }

@@ -9,9 +9,6 @@ class TodoController extends AppController
 {
 	public function actionIndex($id=false)
 	{
-		if (!$this->user->isAuthorized()) {
-			header('location: /user/login');
-		}
 		if (is_numeric($id)) {
 			try {
 				$todo=new Todo();
