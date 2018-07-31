@@ -62,9 +62,36 @@ use \DateTime;
 			$msg['data']=$data;
 			$this->data=$msg;
  	}
- 	public function checkPermByEmail($todolist_id,$user_email,$db)
+ 	public function todoRemove($id,$uid)
+ 	{
+ 		$db = Model::getDoctrine();
+ 		$user=$db->getRepository('entities\User')->findOneBy(['id' => $uid]);
+ 		$email=$user->getEmail();
+		$perm=$this->checkPermByEmail($id,$email); // Check perm for writing
+		if ($perm==1) {
+			$user=$db;
+			// Create a new task
+			$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' =>$id]);
+			if (is_object($todo)) {
+				// Add the task the to list of the User tasks. Since we used cascade={"all"}, we
+				// don't need to persist the task separately: it will be persisted when persisting
+				// the User
+				$user->removeTodolist($todo);
+				// Finally flush and execute the database transaction
+				$db->persist($todo);
+				$db->flush();
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+ 	}
+ 	public function checkPermByEmail($todolist_id,$user_email)
  	{
  		try {
+ 			$db = Model::getDoctrine();
  			$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' => $todolist_id]);
  			$this->db=$todo;
  			if(is_object($todo)) {

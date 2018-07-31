@@ -18,35 +18,18 @@ class ApiController extends AppController
 			$this->notFound();
 		}
 	}
-	public function actionRemove()
+	public function actionRemove($id)
 	{
-		if (is_numeric(REQURL[2])) {
+		if (is_numeric($id)) {
+			echo $id;
 			try {
 				$todo=new Todo();
-				$email=$TodoApp->user->email;
-				$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
-				if ($perm==1) {
-					$user=$TodoApp->user->db;
-					$TodoApp->db->persist($user);
-					// Create a new task
-					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
-					if (is_object($todo)) {
-						// Add the task the to list of the User tasks. Since we used cascade={"all"}, we
-						// don't need to persist the task separately: it will be persisted when persisting
-						// the User
-						$user->removeTodolist($todo);
-						// Finally flush and execute the database transaction
-						$TodoApp->db->flush();
-						$msg['success']=1;
-						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-					} else {
-						msgError();
-					}
+				$uid=$this->user->id;
+				if ($todo->todoRemove($id,$uid)) {
+					$this->msg(1);
 				}
 			} catch (Doctrine\DBAL\DBALException $e) {
-				$msg['success']=0;
-				$msg['error']=$e;
-				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+				$this->msg(0,$e);
 			}
 		} else {
 			$this->notFound();
