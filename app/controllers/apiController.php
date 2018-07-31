@@ -21,12 +21,13 @@ class ApiController extends AppController
 	public function actionRemove($id)
 	{
 		if (is_numeric($id)) {
-			echo $id;
 			try {
 				$todo=new Todo();
 				$uid=$this->user->id;
 				if ($todo->todoRemove($id,$uid)) {
 					$this->msg(1);
+				} else {
+					$this->msg(0);
 				}
 			} catch (Doctrine\DBAL\DBALException $e) {
 				$this->msg(0,$e);

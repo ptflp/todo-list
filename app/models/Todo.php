@@ -69,7 +69,6 @@ use \DateTime;
  		$email=$user->getEmail();
 		$perm=$this->checkPermByEmail($id,$email); // Check perm for writing
 		if ($perm==1) {
-			$user=$db;
 			// Create a new task
 			$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' =>$id]);
 			if (is_object($todo)) {
@@ -78,7 +77,6 @@ use \DateTime;
 				// the User
 				$user->removeTodolist($todo);
 				// Finally flush and execute the database transaction
-				$db->persist($todo);
 				$db->flush();
 				return true;
 			} else {
