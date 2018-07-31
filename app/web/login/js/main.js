@@ -118,10 +118,10 @@
             success: function(data) {
                 console.log(data);
                 switch(data.success) {
-                  case "0":
+                  case 0:
                     swal("Error!", data.error, "error");
                     break;
-                  case "1":
+                  case 1:
                     swal({
                         title: 'Success!',
                         text: 'authorization successfull',
@@ -151,6 +151,7 @@
             data: datastring,
             dataType: "json",
             success: function(data) {
+                console.log(data.success);
                 switch(data.success) {
                   case 0:
                     swal("Error!", data.error, "error");
