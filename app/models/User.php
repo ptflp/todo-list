@@ -55,7 +55,7 @@ use entities\User as dUser;
  	}
  	public function register($login,$password)
  	{
- 		if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+ 		if (filter_var($login, FILTER_VALIDATE_EMAIL) && strlen($password)<3) {
  			$db=$this->db;
 	 		try {
 		 		$options = [
