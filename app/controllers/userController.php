@@ -1,5 +1,6 @@
 <?php
 use controllers\AppController;
+use entities\User;
 /**
  * Controller
  */
@@ -29,9 +30,15 @@ class UserController extends AppController
 			// include('../view/login.php');
 		}
 	}
+	public function testAction($id)
+	{
+		$db=User::getDoctrine();
+		$user=$db->getRepository('entities\User')->findOneBy(['id' => $id]);
+		dump_r($user);
+	}
 	public function actionLogout()
 	{
-		// $TodoApp->user->logout();
+		$this->user->logout();
 		header('location: /user/login');
 	}
 	public function actionRegister()
@@ -40,21 +47,22 @@ class UserController extends AppController
 			header('location: /');
 		}
 		if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
-			$user = $TodoApp->user;
-			$db = $TodoApp->db;
-			if ($user->register($_REQUEST['email'],$_REQUEST['password'],$db)) {
-				$userN=$db->getRepository('entities\User')->findOneBy(['email' => $_REQUEST['email']]);
-				$user->authorize($userN->getId(),$db);
-				$msg['success']='1';
-				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+			if($this->user->isExist($_REQUEST['email'])) {
+				$this->msg(0,'данный пользователь уже существует: '.$_REQUEST['email']);
 			} else {
-				$msg['success']='0';
-				$msg['error']='данный пользователь уже существует: '.$_REQUEST['email'];
-				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+				$this->user->register($_REQUEST['email'],$_REQUEST['password']);
+				$this->user->authorize();
+				$this->msg(0);
 			}
 		} else {
 			$this->view->layout='logreg';
 			echo $this->view->muRender('logreg/register',[]);
 		}
+	}
+	public function msg($success,$error=false)
+	{
+		$msg['success']=$success;
+		$msg['error']=$error;
+		echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 	}
 }

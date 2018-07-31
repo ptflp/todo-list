@@ -1,6 +1,7 @@
 <?php
 namespace models;
 use res\Model as Model;
+use entities\User as dUser;
 /**
   * Class User
   */
@@ -8,17 +9,19 @@ use res\Model as Model;
  {
  	public $id;
  	public $email;
+ 	public $action;
+ 	public $db;
  	function __construct()
  	{
  		$this->db=$this->getDoctrine();
  		if (isset($_SESSION['uid'])) {
+ 			$id=$_SESSION['uid'];
  			$this->authorize($id);
  		}
  	}
  	public function auth($login,$password)
  	{
- 		$db=$this->db;
- 		$user=$db->getRepository('entities\User')->findOneBy(['email' => $login]);
+ 		$user=$this->db->getRepository('dUser')->findOneBy(['email' => $login]);
  		if ($user) {
  			if(password_verify($password, $user->getPassword())) {
 				$this->id = $user->getId();
@@ -30,10 +33,13 @@ use res\Model as Model;
  			return false;
  		}
  	}
- 	public function authorize($id)
+ 	public function authorize($id=false)
  	{
- 		$user=$db->getRepository('entities\User')->findOneBy(['id' => $id]);
- 		$this->db=$user;
+ 		if (!$id) {
+ 			$id=$this->id;
+ 		}
+ 		$user=$this->db->getRepository('entities\User')->findOneBy(['id' => $id]);
+ 		$this->action=$user;
  		$_SESSION['uid']=$user->getId();
  		$this->id=$user->getId();
  		$this->email=$user->getEmail();
@@ -45,17 +51,20 @@ use res\Model as Model;
  	public function register($login,$password)
  	{
  		if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+ 			$db=$this->db;
 	 		try {
 		 		$options = [
 				    'cost' => 10
 				];
 				$hash=password_hash($password, PASSWORD_DEFAULT,$options);
-				$user = (new entities\User())
+				$user = (new dUser())
 				    ->setEmail($login)
 				    ->setPassword($hash);
 				$db->persist($user);
 				// Finally flush and execute the database transaction
 				$db->flush();
+ 				$this->id=$user->getId();
+ 				$this->email=$user->getEmail();
 				return true;
 	 		} catch (Doctrine\DBAL\DBALException $e) {
 	 			return false;
@@ -63,6 +72,15 @@ use res\Model as Model;
  		} else {
  			$error['error']='попытка внедрения невалидного пользователя: '.$login;
  			die(json_encode($error,JSON_UNESCAPED_UNICODE));
+ 		}
+ 	}
+ 	public function isExist($login)
+ 	{
+ 		$user=$this->db->getRepository('entities\User')->findOneBy(['email' => $login]);
+ 		if (is_object($user)) {
+ 			return true;
+ 		} else {
+ 			return false;
  		}
  	}
  	public function logout()
