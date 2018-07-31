@@ -13,6 +13,9 @@ use \stdClass;
  	public $db;
  	public $data;
  	public $mustache;
+ 	/*
+ 	* Sets user permission of todo list by email
+ 	 */
  	public function setPermission($todolist_id,$user_email,$permission)
  	{
  		$db = Model::getDoctrine();
@@ -55,6 +58,9 @@ use \stdClass;
 			return true;
 		}
  	}
+ 	/*
+ 	* Data for output
+ 	 */
  	public function setData($success,$perm=false,$email=false,$title=false,$data=false)
  	{
 			$msg['success']=$success;
@@ -64,6 +70,9 @@ use \stdClass;
 			$msg['data']=$data;
 			$this->data=$msg;
  	}
+ 	/*
+ 	* Remove user todo list by id
+ 	 */
  	public function todoRemove($id,$uid)
  	{
  		$db = Model::getDoctrine();
@@ -88,6 +97,9 @@ use \stdClass;
 			return false;
 		}
  	}
+ 	/*
+ 	* Gets user permission of todo list by email
+ 	 */
  	public function checkPermByEmail($todolist_id,$user_email)
  	{
  		try {
