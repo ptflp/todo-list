@@ -209,12 +209,12 @@ use \DateTime;
 			if ($perm) {
 				$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' => $id]);
 				if(is_object($todo)){
-					$msg['success']=1;
-					$msg['title']=$todo->getTitle();
-					$msg['data']=json_decode($todo->getTasks());
-					echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+					$title=$todo->getTitle();
+					$data = json_decode($todo->getTasks());
+					$this->setData(1,$perm,$email,$title,$data);
+					return true;
 				} else {
-					msgError();
+					return false;
 				}
 			}
 		} catch (Doctrine\DBAL\DBALException $e) {

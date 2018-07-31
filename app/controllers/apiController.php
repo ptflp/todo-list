@@ -17,7 +17,8 @@ class ApiController extends AppController
 	{
 		if (isset($_REQUEST['title'])) {
 			$todo = $this->todo;
-			if ($todo->createTodo($this->user->id,$_REQUEST['title'])) {
+			$uid = $this->user->id;
+			if ($todo->createTodo($uid,$_REQUEST['title'])) {
 				$this->msg(1);
 			}
 		} else {
@@ -84,8 +85,7 @@ class ApiController extends AppController
 			$todo = $this->todo;
 			$uid = $this->user->id;
 			if ($todo->getUserTasks($id,$uid)) {
-				$data=json_encode($todo->data,JSON_UNESCAPED_UNICODE);
-				$this->msg(1,false,$data);
+				echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 			} else {
 
 			}
