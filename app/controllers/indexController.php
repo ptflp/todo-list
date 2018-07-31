@@ -1,10 +1,10 @@
 <?php
-use res\Controller;
+use controllers\AppController;
 use models\Todo;
 /**
  * Controller
  */
-class IndexController extends Controller
+class IndexController extends AppController
 {
 	public function actionIndex()
 	{

@@ -1,9 +1,10 @@
 <?php
+use controllers\AppController;
 use res\Controller;
 /**
  * Controller
  */
-class ApiController extends Controller
+class ApiController extends AppController
 {
 	public function actionCreate()
 	{

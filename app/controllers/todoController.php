@@ -1,9 +1,10 @@
 <?php
+use controllers\AppController;
 use res\Controller;
 /**
  * Controller
  */
-class TodoController extends Controller
+class TodoController extends AppController
 {
 	public function actionIndex($id=false)
 	{
