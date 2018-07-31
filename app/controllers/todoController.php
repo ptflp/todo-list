@@ -1,6 +1,7 @@
 <?php
 use controllers\AppController;
 use res\Controller;
+use models\Todo;
 /**
  * Controller
  */
@@ -8,30 +9,31 @@ class TodoController extends AppController
 {
 	public function actionIndex($id=false)
 	{
-		if (!$TodoApp->user->isAuthorized()) {
+		if (!$this->user->isAuthorized()) {
 			header('location: /user/login');
 		}
-		if (is_numeric(REQURL[1])) {
+		if (is_numeric($id)) {
 			try {
 				$todo=new Todo();
-				$email=$TodoApp->user->email;
-				$perm=$todo->checkPermByEmail(REQURL[1],$email,$TodoApp->db); // Check perm for writing
+				$email=$this->user->email;
+				$perm=$todo->checkPermByEmail($id,$email); // Check perm for writing
 				if ($perm) {
-					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' => REQURL[1]]);
+					$db=Todo::getDoctrine();
+					$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' => $id]);
 					if($todo){
-						require('../view/todo.php');
+						$this->view->layout='todo';
+						echo $this->view->muRender('todo/index',[]);
 					} else {
-						header('location: /');
+						$this->notFound();
 					}
 				} else {
-					header('location: /');
+					$this->notFound();
 				}
 			} catch (Doctrine\DBAL\DBALException $e) {
 				die('something went wrong');
 			}
-			//
 		} else {
-			header('location: /');
+			$this->notFound();
 		}
 	}
 }
