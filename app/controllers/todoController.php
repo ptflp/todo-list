@@ -11,6 +11,7 @@ class TodoController extends AppController
 	{
 		$this->checkParam(['id' => $id]);
 		$todo = new Todo();
+		$uid = $this->user->id;
 		if ($todo->getUserTodoBy(['id' => $id, 'uid' => $uid])) {
 			$this->view->layout='todo';
 			echo $this->view->muRender('todo/index',[]);
