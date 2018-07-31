@@ -151,12 +151,14 @@
             data: datastring,
             dataType: "json",
             success: function(data) {
-                console.log(data);
+                alert(data.success);
                 switch(data.success) {
-                  case "0":
+                  case 0:
+                    alert('error');
                     swal("Error!", data.error, "error");
                     break;
-                  case "1":
+                  case 1:
+                    alert('Success');
                     swal({
                         title: 'Success!',
                         text: 'registration successfull',
