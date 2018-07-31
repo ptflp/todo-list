@@ -1,6 +1,7 @@
 <?php
 use controllers\AppController;
 use res\Controller;
+use res\Model;
 /**
  * Controller
  */
@@ -10,10 +11,8 @@ class ApiController extends AppController
 	{
 		if (isset($_REQUEST['title'])) {
 			try {
-				// $user = $TodoApp->db->getRepository('entities\User')->findOneBy(['id' => $TodoApp->user->id]);
-				// $TodoApp->db->persist($user);
-				$user=$TodoApp->user->db;
-				$TodoApp->db->persist($user);
+				$db = Model::getDoctrine();
+				$user=$db->getRepository('entities\User')->findOneBy(['id' => $this->user->id]);
 				// Create a new todolist
 				$todo = (new entities\Todolist())
 				    ->setTitle($_REQUEST['title'])
@@ -25,9 +24,10 @@ class ApiController extends AppController
 				// don't need to persist the todolist separately: it will be persisted when persisting
 				// the User
 				$user->addTodolist($todo);
+				$db->persist($todo);
 
 				// Finally flush and execute the database transaction
-				$TodoApp->db->flush();
+				$db->flush();
 				$msg['success']=1;
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			} catch (Doctrine\DBAL\DBALException $e) {
@@ -36,7 +36,7 @@ class ApiController extends AppController
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			}
 		} else {
-			header('location: /');
+			$this->notFound();
 		}
 	}
 	public function actionRemove()
@@ -70,7 +70,7 @@ class ApiController extends AppController
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			}
 		} else {
-			header('location: /');
+			$this->notFound();
 		}
 	}
 	public function actionSave()
@@ -102,14 +102,14 @@ class ApiController extends AppController
 						$TodoApp->db->flush();
 						echo $json;
 					} else {
-						header('location: /');
+						$this->notFound();
 					}
 				} else {
-					header('location: /');
+					$this->notFound();
 				}
 			}
 		} else {
-			header('location: /');
+			$this->notFound();
 		}
 	}
 	public function actionGet()
@@ -134,7 +134,7 @@ class ApiController extends AppController
 				die('something went wrong');
 			}
 		} else {
-			header('location: /');
+			$this->notFound();
 		}
 	}
 	public function actionEdit()
@@ -166,7 +166,7 @@ class ApiController extends AppController
 				die('something went wrong'.$e);
 			}
 		} else {
-			header('location: /');
+			$this->notFound();
 		}
 	}
 	public function actionTest()
@@ -208,7 +208,7 @@ class ApiController extends AppController
 	}
 	public function actionSettings()
 	{
-		if($_REQUEST['settings']) {
+		if(isset($_REQUEST['settings'])) {
 			$url['create']="/api/create/";
 			$url['get']="/api/get/";
 			$url['edit']="/api/edit/";
@@ -217,7 +217,7 @@ class ApiController extends AppController
 			$url['share']="/api/share/";
 			echo json_encode($url,JSON_UNESCAPED_UNICODE);
 		} else {
-			header('location: /404');
+			$this->notFound();
 		}
 	}
 }
