@@ -15,7 +15,7 @@ class ApiController extends AppController
 	}
 	public function actionCreate()
 	{
-		$this->checkRequest('title');
+		$this->checkParam(['request'=>['title']]);
 		$todo = $this->todo;
 		$uid = $this->user->id;
 		if ($todo->createTodo($uid,$_REQUEST['title'])) {
@@ -26,7 +26,7 @@ class ApiController extends AppController
 	}
 	public function actionRemove($id=false)
 	{
-		$this->checkId($id);
+		$this->checkParam(['id'=>$id]);
 		$todo = $this->todo;
 		$uid=$this->user->id;
 		if ($todo->todoRemove($id,$uid)) {
@@ -37,8 +37,7 @@ class ApiController extends AppController
 	}
 	public function actionSave($id=false)
 	{
-		$this->checkId($id);
-		$this->checkRequest('data');
+		$this->checkParam(['id'=>$id,'request'=>['data']]);
 		$todo = $this->todo;
 		$data = $_REQUEST['data'];
 		$uid = $this->user->id;
@@ -50,7 +49,7 @@ class ApiController extends AppController
 	}
 	public function actionGet($id=false)
 	{
-		$this->checkId($id);
+		$this->checkParam(['id'=>$id]);
 		$todo = $this->todo;
 		$uid = $this->user->id;
 		if ($todo->getUserTasks($id,$uid)) {
@@ -61,22 +60,19 @@ class ApiController extends AppController
 	}
 	public function actionEdit($id=false)
 	{
-		$this->checkRequest('title');
-		$this->checkId($id);
+		$this->checkParam(['id'=>$id,'request'=>['title']]);
 		$todo = $this->todo;
 		$title=$_REQUEST['title'];
 		$uid = $this->user->id;
 		if ($todo->editTodoTitle($id,$title,$uid)) {
 			echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
+		} else {
+			$this->msg(0);
 		}
 	}
-	public function actionTest()
+	public function actionShare($id=false)
 	{
-		$m = new Mustache_Engine;
-		echo $m->render('Hello {{planet}}', array('planet' => 'World!'));
-	}
-	public function actionShare()
-	{
+		$this->checkParam(['id'=>$id,'request'=>['email','permission']]);
 		if (is_numeric($id)) {
 	 		if (filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL) && is_numeric($_REQUEST['permission'])) {
 	 			$permission=[2,3];
@@ -121,18 +117,21 @@ class ApiController extends AppController
 			$this->notFound();
 		}
 	}
-	public function checkId($id)
+	public function checkParam($arr)
 	{
-		if (!is_numeric($id)) {
-			$this->notFound();
-			exit();
+		if (isset($arr['id'])) {
+			if (!is_numeric($arr['id'])) {
+				$this->notFound();
+				exit();
+			}
 		}
-	}
-	public function checkRequest($request)
-	{
-		if (!isset($_REQUEST[$request])) {
-			$this->notFound();
-			exit();
+		if (isset($arr['request'])) {
+			foreach ($arr['request'] as $key => $value) {
+				if (!isset($_REQUEST[$value])) {
+					$this->notFound();
+					exit();
+				}
+			}
 		}
 	}
 }
