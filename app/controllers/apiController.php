@@ -25,7 +25,7 @@ class ApiController extends AppController
 			$this->notFound();
 		}
 	}
-	public function actionRemove($id)
+	public function actionRemove($id=false)
 	{
 		if (is_numeric($id)) {
 			$todo = $this->todo;
@@ -39,7 +39,7 @@ class ApiController extends AppController
 			$this->notFound();
 		}
 	}
-	public function actionSave($id)
+	public function actionSave($id=false)
 	{
 		if (is_numeric($id)) {
 			$todo = $this->todo;
@@ -79,7 +79,7 @@ class ApiController extends AppController
 			$this->notFound();
 		}
 	}
-	public function actionGet($id)
+	public function actionGet($id=false)
 	{
 		if (is_numeric($id)) {
 			$todo = $this->todo;
@@ -93,7 +93,7 @@ class ApiController extends AppController
 			$this->notFound();
 		}
 	}
-	public function actionEdit($id)
+	public function actionEdit($id=false)
 	{
 		if (is_numeric($id)) {
 			try {
