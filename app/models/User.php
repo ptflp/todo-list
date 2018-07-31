@@ -21,7 +21,7 @@ use entities\User as dUser;
  	}
  	public function auth($login,$password)
  	{
- 		$user=$this->db->getRepository('dUser')->findOneBy(['email' => $login]);
+ 		$user=$this->db->getRepository('entities\User')->findOneBy(['email' => $login]);
  		if ($user) {
  			if(password_verify($password, $user->getPassword())) {
 				$this->id = $user->getId();
