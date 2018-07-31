@@ -27,11 +27,12 @@ use res\Model as Model;
 			$share->setPermission($permission);
 			$db->merge($share);
 			$db->flush();
-			$msg['success']=1;
-			$msg['permission']=$share->getPermission();
-			$msg['email']=$share->getUserEmail();
-			$msg['title']=$this->db->getTitle();
-			$msg['data']=json_decode($this->db->getTasks());
+			$this->setData(	1,
+							$share->getPermission(),
+							$share->getUserEmail(),
+							$this->db->getTitle(),
+							json_decode($this->db->getTasks())
+						);
 			$this->data=$msg;
 			return true;
 		} else {
@@ -41,14 +42,23 @@ use res\Model as Model;
 			    ->setTodolistId($todolist_id);
 			$db->persist($share);
 			$db->flush();
-			$msg['success']=1;
-			$msg['permission']=$share->getPermission();
-			$msg['email']=$share->getUserEmail();
-			$msg['title']=$this->db->getTitle();
-			$msg['data']=json_decode($this->db->getTasks());
-			$this->data=$msg;
+			$this->setData(	1,
+							$share->getPermission(),
+							$share->getUserEmail(),
+							$this->db->getTitle(),
+							json_decode($this->db->getTasks())
+						);
 			return true;
 		}
+ 	}
+ 	public function setData($success,$perm,$email,$title,$data)
+ 	{
+			$msg['success']=$success;
+			$msg['permission']=$perm;
+			$msg['email']=$email;
+			$msg['title']=$title;
+			$msg['data']=$data;
+			$this->data=$msg;
  	}
  	public function checkPermByEmail($todolist_id,$user_email,$db)
  	{
@@ -82,8 +92,13 @@ use res\Model as Model;
  			echo 'error';
  		}
  	}
- 	public function getShared($user,$db)
+ 	/*
+ 	* Gets user shared todo list by user id
+ 	 */
+ 	public function getShared($uid)
  	{
+ 		$db = Model::getDoctrine();
+ 		$user=$db->getRepository('entities\User')->findOneBy(['id' => $uid]);
  		$email=$user->getEmail();
  		$shared = $db->getRepository('entities\Share')->findBy(['user_email' => $email]);
  		$arrItems=[];
@@ -111,8 +126,13 @@ use res\Model as Model;
 		}
  		return $sharedList;
  	}
- 	public function getUserTodo($user)
+ 	/*
+ 	* Gets user todo list by user id
+ 	 */
+ 	public function getUserTodo($uid)
  	{
+ 		$db = Model::getDoctrine();
+ 		$user=$db->getRepository('entities\User')->findOneBy(['id' => $uid]);
 		$data=$user->getTodolist();
 		$todoList=[];
 		foreach ($data as $todo) {
