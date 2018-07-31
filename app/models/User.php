@@ -39,10 +39,15 @@ use entities\User as dUser;
  			$id=$this->id;
  		}
  		$user=$this->db->getRepository('entities\User')->findOneBy(['id' => $id]);
- 		$this->action=$user;
- 		$_SESSION['uid']=$user->getId();
- 		$this->id=$user->getId();
- 		$this->email=$user->getEmail();
+ 		if (is_object($user)) {
+	 		$this->action=$user;
+	 		$_SESSION['uid']=$user->getId();
+	 		$this->id=$user->getId();
+	 		$this->email=$user->getEmail();
+	 		return true;
+ 		} else {
+ 			return false;
+ 		}
  	}
  	public function isAuthorized()
  	{

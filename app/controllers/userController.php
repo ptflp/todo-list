@@ -52,7 +52,7 @@ class UserController extends AppController
 			} else {
 				$this->user->register($_REQUEST['email'],$_REQUEST['password']);
 				$this->user->authorize();
-				$this->msg(0);
+				$this->msg(1);
 			}
 		} else {
 			$this->view->layout='logreg';
