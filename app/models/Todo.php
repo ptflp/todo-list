@@ -2,6 +2,7 @@
 namespace models;
 use res\Model as Model;
 use entities\Todolist;
+use entities\Share;
 use \DateTime;
 use \stdClass;
 /**
@@ -12,8 +13,9 @@ use \stdClass;
  	public $db;
  	public $data;
  	public $mustache;
- 	public function setPermission($todolist_id,$user_email,$permission,$db)
+ 	public function setPermission($todolist_id,$user_email,$permission)
  	{
+ 		$db = Model::getDoctrine();
 		$perm=$this->checkPermByEmail($todolist_id,$user_email,$db);
 		if ($perm) {
  			$query=$db->createQueryBuilder();
@@ -36,10 +38,9 @@ use \stdClass;
 							$this->db->getTitle(),
 							json_decode($this->db->getTasks())
 						);
-			$this->data=$msg;
 			return true;
 		} else {
-			$share = (new entities\Share())
+			$share = (new Share())
 			    ->setPermission($permission)
 			    ->setUserEmail($user_email)
 			    ->setTodolistId($todolist_id);
@@ -54,7 +55,7 @@ use \stdClass;
 			return true;
 		}
  	}
- 	public function setData($success,$perm,$email,$title,$data)
+ 	public function setData($success,$perm=false,$email=false,$title=false,$data=false)
  	{
 			$msg['success']=$success;
 			$msg['permission']=$perm;
@@ -222,6 +223,9 @@ use \stdClass;
 			die('something went wrong');
 		}
  	}
+ 	/*
+ 	* Save user todo tasks
+ 	*/
  	public function saveUserTasks($id,$data,$uid)
  	{
 		$db = Model::getDoctrine();
@@ -261,6 +265,9 @@ use \stdClass;
 			}
 		}
  	}
+ 	/*
+ 	* Edit user todo title
+ 	*/
  	public function editTodoTitle($id,$title,$uid)
  	{
 		try {
@@ -286,6 +293,38 @@ use \stdClass;
 			}
 		} catch (Doctrine\DBAL\DBALException $e) {
 			die('something went wrong'.$e);
+		}
+ 	}
+ 	/*
+ 	* Share user todo with other users by email
+ 	*/
+ 	public function shareTodo($id,$email,$perm,$uid)
+ 	{
+ 		if (filter_var($email, FILTER_VALIDATE_EMAIL) && is_numeric($perm)) {
+ 			$permission=[2,3];
+ 			if (!in_array($perm,$permission)) {
+				header('location: /');
+ 			}
+			try {
+				$db = Model::getDoctrine();
+				$user=$db->getRepository('entities\User')->findOneBy(['id' => $uid]);
+				$uemail=$user->getEmail();
+				$uperm=$this->checkPermByEmail($id,$uemail); // Check perm for writing
+				if ($uperm==1) {
+					if($uemail==$email) {
+						$this->setData(0);
+						return false;
+					} else {
+						$this->setPermission($id,$email,$perm);
+						return true;
+					}
+				} else {
+					$this->setData(0);
+					return false;
+				}
+			} catch (Doctrine\DBAL\DBALException $e) {
+				die('something went wrong'.$e);
+			}
 		}
  	}
 
