@@ -15,4 +15,4 @@ use res\Model as Model;
 		// Get the entity manager
 		$this->db = Doctrine\ORM\EntityManager::create($connection_parameters, $configuration);
  	}
- } ?>
+ }
