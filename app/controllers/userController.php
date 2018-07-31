@@ -1,5 +1,6 @@
 <?php
 use res\Controller;
+use models\User;
 /**
  * Controller
  */
@@ -7,6 +8,7 @@ class UserController extends Controller
 {
 	public function actionLogin($id=false)
 	{
+		$user = new User;
 		if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
 			$user = $TodoApp->user;
 			$db = $TodoApp->db;
@@ -21,15 +23,17 @@ class UserController extends Controller
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			}
 		} else {
-			if ($TodoApp->user->isAuthorized()) {
+			if ($user->isAuthorized()) {
 				header('location: /');
 			}
-			include('../view/login.php');
+			$this->view->layout='logreg';
+			echo $this->view->muRender('logreg/login',['message'=>'Hello World']);
+			// include('../view/login.php');
 		}
 	}
 	public function actionLogout()
 	{
-		$TodoApp->user->logout();
+		// $TodoApp->user->logout();
 		header('location: /user/login');
 	}
 	public function register()
