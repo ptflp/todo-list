@@ -23,5 +23,11 @@ class AppController extends Controller
 		$this->view->layout='404';
  		echo $this->view->muRender('404',$content);
 	}
+	public function msg($success,$error=false)
+	{
+		$msg['success']=$success;
+		$msg['error']=$error;
+		echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+	}
 
 }
