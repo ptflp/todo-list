@@ -339,5 +339,29 @@ use \stdClass;
 			}
 		}
  	}
+ 	public function getUserTodoBy($param=false)
+ 	{
+		try {
+			$uid=$param['uid'];
+			$id=$param['id'];
+			$db = Model::getDoctrine();
+			$user=$db->getRepository('entities\User')->findOneBy(['id' => $uid]);
+			$todo=$this->todo;
+			$email=$this->user->email;
+			$perm=$todo->checkPermByEmail($id,$email); // Check perm for writing
+			if ($perm) {
+				$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' => $id]);
+				if($todo){
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		} catch (Doctrine\DBAL\DBALException $e) {
+			die('something went wrong');
+		}
+ 	}
 
  }
