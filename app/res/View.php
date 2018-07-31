@@ -31,7 +31,7 @@ use Mustache_Loader_FilesystemLoader;
 		{
 	 		$view=$this->mustache->loadTemplate($template);
 	 		$content['content']=$view->render($data);
-	 		$layout=$this->mustache->loadTemplate('layouts/main');
+	 		$layout=$this->mustache->loadTemplate('layouts/' . $this->layout);
 	 		return $layout->render($content);
 		}
 	}

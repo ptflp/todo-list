@@ -46,9 +46,10 @@ class Autoloader
   }
   private static function StPutFile($data)
   {
-    $dir = dirname(__FILE__) .'/res/Log/Log.html';
+    $dir = dirname(__FILE__) .'/res/Log/';
+    $file = $dir . 'Log.html';
     if (file_exists($dir)) {
-      $file = fopen($dir, 'a');
+      $file = fopen($file, 'a');
       flock($file, LOCK_EX);
       fwrite($file, ('║' .$data .'=>' .date('d.m.Y H:i:s') .'<br/>║<br/>' .PHP_EOL));
       flock($file, LOCK_UN);

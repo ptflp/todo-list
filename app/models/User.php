@@ -8,8 +8,13 @@ use res\Model as Model;
  {
  	public $id;
  	public $email;
- 	public $db;
- 	public function auth($login,$password,$db)
+ 	function __construct()
+ 	{
+ 		if (isset($_SESSION['uid'])) {
+ 			$this->authorize($id);
+ 		}
+ 	}
+ 	public static function auth($login,$password,$db)
  	{
  		$user=$db->getRepository('entities\User')->findOneBy(['email' => $login]);
  		if ($user) {
@@ -23,7 +28,7 @@ use res\Model as Model;
  			return false;
  		}
  	}
- 	public function authorize($id,$db)
+ 	public function authorize($id)
  	{
  		$user=$db->getRepository('entities\User')->findOneBy(['id' => $id]);
  		$this->db=$user;
@@ -33,9 +38,9 @@ use res\Model as Model;
  	}
  	public function isAuthorized()
  	{
- 		return is_numeric($_SESSION['uid']);
+ 		return isset($_SESSION['uid']);
  	}
- 	public function register($login,$password,$db)
+ 	public function register($login,$password)
  	{
  		if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
 	 		try {
@@ -61,6 +66,5 @@ use res\Model as Model;
  	public function logout()
  	{
  		unset($_SESSION['uid']);
- 		session_destroy();
  	}
  }
