@@ -1,7 +1,7 @@
 <?php
 use controllers\AppController;
 use res\Controller;
-use res\Model;
+use models\Todo;
 /**
  * Controller
  */
@@ -10,30 +10,9 @@ class ApiController extends AppController
 	public function actionCreate()
 	{
 		if (isset($_REQUEST['title'])) {
-			try {
-				$db = Model::getDoctrine();
-				$user=$db->getRepository('entities\User')->findOneBy(['id' => $this->user->id]);
-				// Create a new todolist
-				$todo = (new entities\Todolist())
-				    ->setTitle($_REQUEST['title'])
-				    ->setTasks("[]")
-				    ->setUser($user)
-				    ->setDate(new DateTime());
-
-				// Add the todolist the to list of the User tasks. Since we used cascade={"all"}, we
-				// don't need to persist the todolist separately: it will be persisted when persisting
-				// the User
-				$user->addTodolist($todo);
-				$db->persist($todo);
-
-				// Finally flush and execute the database transaction
-				$db->flush();
-				$msg['success']=1;
-				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-			} catch (Doctrine\DBAL\DBALException $e) {
-				$msg['success']=0;
-				$msg['error']=$e;
-				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+			$todo = new Todo();
+			if ($todo->createTodo($this->user->id,$_REQUEST['title'])) {
+				$this->msg(1);
 			}
 		} else {
 			$this->notFound();

@@ -1,6 +1,8 @@
 <?php
 namespace models;
 use res\Model as Model;
+use entities\Todolist;
+use \DateTime;
 /**
   * Class Todo
   */
@@ -139,6 +141,35 @@ use res\Model as Model;
 			$todoList[]=['title'=>$todo->getTitle(),'id'=>$todo->getId()];
 		}
 		return $todoList;
+ 	}
+ 	/*
+ 	* Creating new todo
+ 	 */
+ 	public function createTodo($uid,$title)
+ 	{
+		try {
+			$db = Model::getDoctrine();
+			$user=$db->getRepository('entities\User')->findOneBy(['id' => $uid]);
+			// Create a new todolist
+			$todo = (new Todolist())
+			    ->setTitle($title)
+			    ->setTasks("[]")
+			    ->setUser($user)
+			    ->setDate(new DateTime());
+
+			// Add the todolist the to list of the User tasks. Since we used cascade={"all"}, we
+			// don't need to persist the todolist separately: it will be persisted when persisting
+			// the User
+			$user->addTodolist($todo);
+			$db->persist($todo);
+
+			// Finally flush and execute the database transaction
+			$db->flush();
+			return true;
+		} catch (Doctrine\DBAL\DBALException $e) {
+			$this->data=$e;
+			return false;
+		}
  	}
 
  }
