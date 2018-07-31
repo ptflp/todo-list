@@ -13,6 +13,10 @@ class AppController extends Controller
         parent::__construct();
 		session_start();
         $this->user = new User;
+        if (!$this->user->isAuthorized()) {
+        	$this->redirect('/user/login');
+        	exit();
+        }
 	}
 	public function notFound()
 	{
@@ -29,6 +33,10 @@ class AppController extends Controller
 		$msg['error']=$error;
 		$msg['data']=$data;
 		echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+	}
+	public function redirect($url)
+	{
+		header('location: '.$url);
 	}
 
 }
