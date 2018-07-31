@@ -1,4 +1,6 @@
 <?php
+namespace models;
+use res\Model as Model;
 /**
   * Class App
   */

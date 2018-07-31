@@ -1,8 +1,10 @@
 <?php
+namespace models;
+use res\Model as Model;
 /**
   * Class User
   */
- class User
+ class User extends Model
  {
  	public $id;
  	public $email;

@@ -1,8 +1,10 @@
 <?php
+namespace models;
+use res\Model as Model;
 /**
   * Class Todo
   */
- class Todo
+ class Todo extends Model
  {
  	public $db;
  	public $data;
