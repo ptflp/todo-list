@@ -14,12 +14,9 @@ class UserController extends AppController
 			$auth=$user->auth($_REQUEST['email'],$_REQUEST['password'],$db);
 			if ($auth) {
 				$user->authorize($user->id,$db);
-				$msg['success']='1';
-				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+				$this->msg(1);
 			} else {
-				$msg['success']='0';
-				$msg['error']='Неправильная пара логин пароль';
-				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+				$this->msg(0,'Неправильная пара логин пароль');
 			}
 		} else {
 			if ($this->user->isAuthorized()) {
@@ -27,14 +24,7 @@ class UserController extends AppController
 			}
 			$this->view->layout='logreg';
 			echo $this->view->muRender('logreg/login',[]);
-			// include('../view/login.php');
 		}
-	}
-	public function testAction($id)
-	{
-		$db=User::getDoctrine();
-		$user=$db->getRepository('entities\User')->findOneBy(['id' => $id]);
-		dump_r($user);
 	}
 	public function actionLogout()
 	{
