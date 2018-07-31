@@ -43,37 +43,12 @@ class ApiController extends AppController
 	{
 		if (is_numeric($id)) {
 			$todo = $this->todo;
-			$email=$this->user->email;
-			$perm=$todo->checkPermByEmail($id,$email); // Check perm for writing
-			if ($perm==1 || $perm==2) {
-				$db = Todo::getDoctrine();
-				$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' =>$id]);
-				if($todo){
-					$user=$todo->getUser();
-					$array=json_decode($_REQUEST['data']);
-					if (is_array($array)) {
-						$arr=[];
-						$i=0;
-						foreach ($array as $key => $value) {
-							$item = new stdClass();
-							$item->title=$value->title;
-							$item->complete=$value->complete;
-							$item->id=$value->id;
-							if($value->title && mb_strlen($value->id)== 17 && is_bool($value->complete)){
-								$arr[]=$item;
-							}
-						}
-						$json=json_encode($arr);
-						$todo->setTasks($json);
-						$db->merge($todo);
-						$db->flush();
-						echo $json;
-					} else {
-						$this->notFound();
-					}
-				} else {
-					$this->notFound();
-				}
+			$data = $_REQUEST['data'];
+			$uid = $this->user->id;
+			if ($todo->saveUserTasks($id,$data,$uid)) {
+				echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
+			} else {
+				$this->msg(0);
 			}
 		} else {
 			$this->notFound();
@@ -87,7 +62,7 @@ class ApiController extends AppController
 			if ($todo->getUserTasks($id,$uid)) {
 				echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 			} else {
-
+				$this->msg(0);
 			}
 		} else {
 			$this->notFound();

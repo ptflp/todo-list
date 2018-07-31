@@ -3,6 +3,7 @@ namespace models;
 use res\Model as Model;
 use entities\Todolist;
 use \DateTime;
+use \stdClass;
 /**
   * Class Todo
   */
@@ -219,6 +220,45 @@ use \DateTime;
 			}
 		} catch (Doctrine\DBAL\DBALException $e) {
 			die('something went wrong');
+		}
+ 	}
+ 	public function saveUserTasks($id,$data,$uid)
+ 	{
+		$db = Model::getDoctrine();
+		$user=$db->getRepository('entities\User')->findOneBy(['id' => $uid]);
+		$email=$user->getEmail();
+		$perm=$this->checkPermByEmail($id,$email); // Check perm for writing
+		if ($perm==1 || $perm==2) {
+			$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' =>$id]);
+			if($todo){
+				$user=$todo->getUser();
+				$array=json_decode($_REQUEST['data']);
+				if (is_array($array)) {
+					$arr=[];
+					$i=0;
+					foreach ($array as $key => $value) {
+						$item = new stdClass();
+						$item->title=$value->title;
+						$item->complete=$value->complete;
+						$item->id=$value->id;
+						if($value->title && mb_strlen($value->id)== 17 && is_bool($value->complete)){
+							$arr[]=$item;
+						}
+					}
+					$json=json_encode($arr);
+					$todo->setTasks($json);
+					$db->merge($todo);
+					$db->flush();
+					$title=$todo->getTitle();
+					$data = json_decode($json);
+					$this->setData(1,$perm,$email,$title,$data);
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
 		}
  	}
 
