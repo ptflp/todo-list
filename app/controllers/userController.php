@@ -1,14 +1,12 @@
 <?php
-use res\Controller;
-use models\User;
+use controllers\AppController;
 /**
  * Controller
  */
-class UserController extends Controller
+class UserController extends AppController
 {
 	public function actionLogin($id=false)
 	{
-		$user = new User;
 		if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
 			$user = $TodoApp->user;
 			$db = $TodoApp->db;
@@ -23,7 +21,7 @@ class UserController extends Controller
 				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 			}
 		} else {
-			if ($user->isAuthorized()) {
+			if ($this->user->isAuthorized()) {
 				header('location: /');
 			}
 			$this->view->layout='logreg';
