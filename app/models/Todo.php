@@ -196,5 +196,30 @@ use \DateTime;
 			return false;
 		}
  	}
+ 	/*
+ 	* Get user todo tasks
+ 	*/
+ 	public function getUserTasks($id,$uid)
+ 	{
+		try {
+			$db = Model::getDoctrine();
+			$user=$db->getRepository('entities\User')->findOneBy(['id' => $uid]);
+			$email=$user->getEmail();
+			$perm=$this->checkPermByEmail($id,$email); // Check perm for writing
+			if ($perm) {
+				$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' => $id]);
+				if(is_object($todo)){
+					$msg['success']=1;
+					$msg['title']=$todo->getTitle();
+					$msg['data']=json_decode($todo->getTasks());
+					echo json_encode($msg,JSON_UNESCAPED_UNICODE);
+				} else {
+					msgError();
+				}
+			}
+		} catch (Doctrine\DBAL\DBALException $e) {
+			die('something went wrong');
+		}
+ 	}
 
  }

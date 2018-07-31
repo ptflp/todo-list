@@ -7,10 +7,16 @@ use models\Todo;
  */
 class ApiController extends AppController
 {
+	public $todo;
+	function __construct()
+	{
+		parent::__construct();
+		$this->todo = new Todo();
+	}
 	public function actionCreate()
 	{
 		if (isset($_REQUEST['title'])) {
-			$todo = new Todo();
+			$todo = $this->todo;
 			if ($todo->createTodo($this->user->id,$_REQUEST['title'])) {
 				$this->msg(1);
 			}
@@ -21,29 +27,26 @@ class ApiController extends AppController
 	public function actionRemove($id)
 	{
 		if (is_numeric($id)) {
-			try {
-				$todo=new Todo();
-				$uid=$this->user->id;
-				if ($todo->todoRemove($id,$uid)) {
-					$this->msg(1);
-				} else {
-					$this->msg(0);
-				}
-			} catch (Doctrine\DBAL\DBALException $e) {
-				$this->msg(0,$e);
+			$todo = $this->todo;
+			$uid=$this->user->id;
+			if ($todo->todoRemove($id,$uid)) {
+				$this->msg(1);
+			} else {
+				$this->msg(0);
 			}
 		} else {
 			$this->notFound();
 		}
 	}
-	public function actionSave()
+	public function actionSave($id)
 	{
-		if (is_numeric(REQURL[2])) {
-			$todo=new Todo();
-			$email=$TodoApp->user->email;
-			$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
+		if (is_numeric($id)) {
+			$todo = $this->todo;
+			$email=$this->user->email;
+			$perm=$todo->checkPermByEmail($id,$email); // Check perm for writing
 			if ($perm==1 || $perm==2) {
-				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
+				$db = Todo::getDoctrine();
+				$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' =>$id]);
 				if($todo){
 					$user=$todo->getUser();
 					$array=json_decode($_REQUEST['data']);
@@ -61,8 +64,8 @@ class ApiController extends AppController
 						}
 						$json=json_encode($arr);
 						$todo->setTasks($json);
-						$TodoApp->db->merge($todo);
-						$TodoApp->db->flush();
+						$db->merge($todo);
+						$db->flush();
 						echo $json;
 					} else {
 						$this->notFound();
@@ -75,45 +78,35 @@ class ApiController extends AppController
 			$this->notFound();
 		}
 	}
-	public function actionGet()
+	public function actionGet($id)
 	{
-		if (is_numeric(REQURL[2])) {
-			try {
-				$todo=new Todo();
-				$email=$TodoApp->user->email;
-				$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
-				if ($perm) {
-					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' => REQURL[2]]);
-					if(is_object($todo)){
-						$msg['success']=1;
-						$msg['title']=$todo->getTitle();
-						$msg['data']=json_decode($todo->getTasks());
-						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-					} else {
-						msgError();
-					}
-				}
-			} catch (Doctrine\DBAL\DBALException $e) {
-				die('something went wrong');
+		if (is_numeric($id)) {
+			$todo = $this->todo;
+			$uid = $this->user->id;
+			if ($todo->getUserTasks($id,$uid)) {
+				$data=json_encode($todo->data,JSON_UNESCAPED_UNICODE);
+				$this->msg(1,false,$data);
+			} else {
+
 			}
 		} else {
 			$this->notFound();
 		}
 	}
-	public function actionEdit()
+	public function actionEdit($id)
 	{
-		if (is_numeric(REQURL[2])) {
+		if (is_numeric($id)) {
 			try {
-				$todo=new Todo();
-				$email=$TodoApp->user->email;
-				$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
+				$todo = $this->todo;
+				$email=$this->user->email;
+				$perm=$todo->checkPermByEmail($id,$email); // Check perm for writing
 				if ($perm==1) {
-					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
+					$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' =>$id]);
 					$user=$todo->getUser();
 					if(is_object($todo) && $user->getId() == $TodoApp->user->id){
 						$todo->setTitle($_REQUEST['title']);
-						$TodoApp->db->merge($todo);
-						$TodoApp->db->flush();
+						$db->merge($todo);
+						$db->flush();
 						$msg['success']=1;
 						$msg['title']=$todo->getTitle();
 						$msg['data']=json_decode($todo->getTasks());
@@ -139,21 +132,21 @@ class ApiController extends AppController
 	}
 	public function actionShare()
 	{
-		if (is_numeric(REQURL[2])) {
+		if (is_numeric($id)) {
 	 		if (filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL) && is_numeric($_REQUEST['permission'])) {
 	 			$permission=[2,3];
 	 			if (!in_array($_REQUEST['permission'],$permission)) {
 					header('location: /');
 	 			}
 				try {
-					$todo=new Todo();
-					$email=$TodoApp->user->email;
-					$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
+					$todo = $this->todo;
+					$email=$this->user->email;
+					$perm=$todo->checkPermByEmail($id,$email); // Check perm for writing
 					if ($perm==1) {
 						if($email==$_REQUEST['email']) {
 							msgError();
 						} else {
-							$todo->setPermission(REQURL[2],$_REQUEST['email'],$_REQUEST['permission'],$TodoApp->db);
+							$todo->setPermission($id,$_REQUEST['email'],$_REQUEST['permission']);
 							echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 						}
 					} else {
