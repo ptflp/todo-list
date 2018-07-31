@@ -30,6 +30,7 @@ use Mustache_Loader_FilesystemLoader;
 		public function muRender($template,$data)
 		{
 	 		$view=$this->mustache->loadTemplate($template);
+	 		$content=$data;
 	 		$content['content']=$view->render($data);
 	 		$layout=$this->mustache->loadTemplate('layouts/' . $this->layout);
 	 		return $layout->render($content);
