@@ -1,10 +1,10 @@
 <?php
 return [
 	'db' => [
-		'dbname' => 'MVC',
+		'dbname' => 'appdb',
 	    'user' => 'root',
 	    'password' => 'root',
-	    'host' => 'sitesdb',
+	    'host' => 'appdb',
 	    'driver' => 'pdo_mysql'
 	],
 	'settings' => [
