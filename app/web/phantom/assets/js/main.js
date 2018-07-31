@@ -249,7 +249,7 @@
 	        });
  		});
 		$.ajax({
-		  url: "/api/",
+		  url: "/api/settings",
 		  method: "POST",
 		  data: { settings : 1},
 		  dataType: "json",
