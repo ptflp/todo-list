@@ -15,57 +15,48 @@ class ApiController extends AppController
 	}
 	public function actionCreate()
 	{
-		if (isset($_REQUEST['title'])) {
-			$todo = $this->todo;
-			$uid = $this->user->id;
-			if ($todo->createTodo($uid,$_REQUEST['title'])) {
-				$this->msg(1);
-			}
+		$this->checkRequest('title');
+		$todo = $this->todo;
+		$uid = $this->user->id;
+		if ($todo->createTodo($uid,$_REQUEST['title'])) {
+			$this->msg(1);
 		} else {
-			$this->notFound();
+			$this->msg(0);
 		}
 	}
 	public function actionRemove($id=false)
 	{
-		if (is_numeric($id)) {
-			$todo = $this->todo;
-			$uid=$this->user->id;
-			if ($todo->todoRemove($id,$uid)) {
-				$this->msg(1);
-			} else {
-				$this->msg(0);
-			}
+		$this->checkId($id);
+		$todo = $this->todo;
+		$uid=$this->user->id;
+		if ($todo->todoRemove($id,$uid)) {
+			$this->msg(1);
 		} else {
-			$this->notFound();
+			$this->msg(0);
 		}
 	}
 	public function actionSave($id=false)
 	{
-		if (is_numeric($id)) {
-			$todo = $this->todo;
-			$data = $_REQUEST['data'];
-			$uid = $this->user->id;
-			if ($todo->saveUserTasks($id,$data,$uid)) {
-				echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
-			} else {
-				$this->msg(0);
-			}
+		$this->checkId($id);
+		$this->checkRequest('data');
+		$todo = $this->todo;
+		$data = $_REQUEST['data'];
+		$uid = $this->user->id;
+		if ($todo->saveUserTasks($id,$data,$uid)) {
+			echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 		} else {
-			$this->notFound();
+			$this->msg(0);
 		}
 	}
 	public function actionGet($id=false)
 	{
-		if (is_numeric($id)) {
-			$todo = $this->todo;
-			$uid = $this->user->id;
-			if ($todo->getUserTasks($id,$uid)) {
-				echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
-			} else {
-				$this->msg(0);
-			}
+		$this->checkId($id);
+		$todo = $this->todo;
+		$uid = $this->user->id;
+		if ($todo->getUserTasks($id,$uid)) {
+			echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 		} else {
-			$this->notFound();
+			$this->msg(0);
 		}
 	}
 	public function actionEdit($id=false)
@@ -149,6 +140,20 @@ class ApiController extends AppController
 			echo json_encode($url,JSON_UNESCAPED_UNICODE);
 		} else {
 			$this->notFound();
+		}
+	}
+	public function checkId($id)
+	{
+		if (!is_numeric($id)) {
+			$this->notFound();
+			exit();
+		}
+	}
+	public function checkRequest($request)
+	{
+		if (!isset($_REQUEST[$request])) {
+			$this->notFound();
+			exit();
 		}
 	}
 }
