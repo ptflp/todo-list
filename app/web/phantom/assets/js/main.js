@@ -407,7 +407,7 @@
 							.fail(function(err) {
 								swal("Oh noes!", "The AJAX request failed! " + JSON.stringify(err), "error");
 							});
-						});
+						}).catch(swal.noop);
 	                    // setTimeout(function () {
 	                    //     window.location.replace("/");
 	                    //     window.location.href = "/";

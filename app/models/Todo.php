@@ -261,5 +261,32 @@ use \stdClass;
 			}
 		}
  	}
+ 	public function editTodoTitle($id,$title,$uid)
+ 	{
+		try {
+			$db = Model::getDoctrine();
+			$user=$db->getRepository('entities\User')->findOneBy(['id' => $uid]);
+			$email=$user->getEmail();
+			$perm=$this->checkPermByEmail($id,$email); // Check perm for writing
+			if ($perm==1) {
+				$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' =>$id]);
+				$Tuser=$todo->getUser();
+				if(is_object($todo) && $Tuser->getId() == $user->getId()){
+					$todo->setTitle($title);
+					$db->merge($todo);
+					$db->flush();
+					$data = json_decode($todo->getTasks());
+					$this->setData(1,$perm,$email,$title,$data);
+					return true;
+				} else {
+				return false;
+				}
+			} else {
+				return false;
+			}
+		} catch (Doctrine\DBAL\DBALException $e) {
+			die('something went wrong'.$e);
+		}
+ 	}
 
  }

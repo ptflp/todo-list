@@ -61,34 +61,13 @@ class ApiController extends AppController
 	}
 	public function actionEdit($id=false)
 	{
-		if (is_numeric($id)) {
-			try {
-				$todo = $this->todo;
-				$email=$this->user->email;
-				$perm=$todo->checkPermByEmail($id,$email); // Check perm for writing
-				if ($perm==1) {
-					$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' =>$id]);
-					$user=$todo->getUser();
-					if(is_object($todo) && $user->getId() == $TodoApp->user->id){
-						$todo->setTitle($_REQUEST['title']);
-						$db->merge($todo);
-						$db->flush();
-						$msg['success']=1;
-						$msg['title']=$todo->getTitle();
-						$msg['data']=json_decode($todo->getTasks());
-						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-					} else {
-					msgError();
-					}
-				} else {
-					msgError();
-				}
-
-			} catch (Doctrine\DBAL\DBALException $e) {
-				die('something went wrong'.$e);
-			}
-		} else {
-			$this->notFound();
+		$this->checkRequest('title');
+		$this->checkId($id);
+		$todo = $this->todo;
+		$title=$_REQUEST['title'];
+		$uid = $this->user->id;
+		if ($todo->editTodoTitle($id,$title,$uid)) {
+			echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 		}
 	}
 	public function actionTest()
