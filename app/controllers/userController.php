@@ -8,8 +8,8 @@ class UserController extends AppController
 	public function actionLogin($id=false)
 	{
 		if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
-			$user = $TodoApp->user;
-			$db = $TodoApp->db;
+			$user = $this->user;
+			$db = $this->user->db;
 			$auth=$user->auth($_REQUEST['email'],$_REQUEST['password'],$db);
 			if ($auth) {
 				$user->authorize($user->id,$db);

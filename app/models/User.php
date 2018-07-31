@@ -10,12 +10,14 @@ use res\Model as Model;
  	public $email;
  	function __construct()
  	{
+ 		$this->db=$this->getDoctrine();
  		if (isset($_SESSION['uid'])) {
  			$this->authorize($id);
  		}
  	}
- 	public static function auth($login,$password,$db)
+ 	public function auth($login,$password)
  	{
+ 		$db=$this->db;
  		$user=$db->getRepository('entities\User')->findOneBy(['email' => $login]);
  		if ($user) {
  			if(password_verify($password, $user->getPassword())) {
