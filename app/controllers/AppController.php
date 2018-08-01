@@ -22,6 +22,9 @@ class AppController extends Controller
         			];
         $this->checkRoute();
 	}
+	/*
+	* Show 404, reserved method for inherited controllers
+	 */
 	public function notFound()
 	{
 		header("HTTP/1.0 404 Not Found");
@@ -31,6 +34,9 @@ class AppController extends Controller
 		$this->view->layout='404';
  		echo $this->view->muRender('404',$content);
 	}
+	/*
+	* Show api call status message
+	 */
 	public function msg($success,$error=false,$data=false)
 	{
 		$msg['success']=$success;
@@ -38,10 +44,16 @@ class AppController extends Controller
 		$msg['data']=$data;
 		echo json_encode($msg,JSON_UNESCAPED_UNICODE);
 	}
+	/*
+	* Redirecting by url
+	 */
 	public function redirect($url)
 	{
 		header('location: '.$url);
 	}
+	/*
+	* Checks required api params
+	 */
 	public function checkParam($arr)
 	{
 		if (isset($arr['id'])) {
@@ -59,6 +71,9 @@ class AppController extends Controller
 			}
 		}
 	}
+	/*
+	* Checks routes allowed for not authorized users
+	 */
 	public function checkRoute()
 	{
 		$allow=0;

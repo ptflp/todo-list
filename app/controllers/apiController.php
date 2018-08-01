@@ -14,6 +14,9 @@ class ApiController extends AppController
 		parent::__construct();
 		$this->todo = new Todo();
 	}
+	/*
+	* Creating new todo list with title
+	 */
 	public function actionCreate()
 	{
 		$this->checkParam(['request'=>['title']]);
@@ -25,6 +28,9 @@ class ApiController extends AppController
 			$this->msg(0);
 		}
 	}
+	/*
+	* remove todo list by id
+	 */
 	public function actionRemove($id=false)
 	{
 		$this->checkParam(['id'=>$id]);
@@ -36,6 +42,9 @@ class ApiController extends AppController
 			$this->msg(0);
 		}
 	}
+	/*
+	* Save user todo tasks by id
+	 */
 	public function actionSave($id=false)
 	{
 		$this->checkParam(['id'=>$id,'request'=>['data']]);
@@ -48,6 +57,9 @@ class ApiController extends AppController
 			$this->msg(0);
 		}
 	}
+	/*
+	* Get user todo tasks by id
+	 */
 	public function actionGet($id=false)
 	{
 		$this->checkParam(['id'=>$id]);
@@ -59,6 +71,9 @@ class ApiController extends AppController
 			$this->msg(0);
 		}
 	}
+	/*
+	* Edit todo title by id
+	 */
 	public function actionEdit($id=false)
 	{
 		$this->checkParam(['id'=>$id,'request'=>['title']]);
@@ -71,6 +86,9 @@ class ApiController extends AppController
 			$this->msg(0);
 		}
 	}
+	/*
+	* Edit todo title by id
+	 */
 	public function actionShare($id=false)
 	{
 		$this->checkParam(['id'=>$id,'request'=>['email','permission']]);
@@ -84,6 +102,9 @@ class ApiController extends AppController
 			$this->msg(0);
 		}
 	}
+	/*
+	* Frontend api url initialization
+	 */
 	public function actionSettings()
 	{
 		if(isset($_REQUEST['settings'])) {
@@ -98,6 +119,9 @@ class ApiController extends AppController
 			$this->notFound();
 		}
 	}
+	/*
+	* Register user by email, password
+	 */
 	public function actionRegister()
 	{
 		$this->checkParam(['request'=>['email','password']]);
@@ -108,6 +132,9 @@ class ApiController extends AppController
 			$this->msg(0);
 		}
 	}
+	/*
+	* Login user by email, password
+	 */
 	public function actionLogin()
 	{
 		$user = new User;
