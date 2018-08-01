@@ -8,15 +8,19 @@ use models\User;
 class AppController extends Controller
 {
 	public $user;
+	public $allow;
 	function __construct()
 	{
         parent::__construct();
 		session_start();
         $this->user = new User;
-        if (!$this->user->isAuthorized()) {
-        	$this->redirect('/user/login');
-        	exit();
-        }
+        $this->allow=[
+        				'api/register',
+        				'api/login',
+        				'user/login',
+        				'user/register'
+        			];
+        $this->checkRoute();
 	}
 	public function notFound()
 	{
@@ -54,6 +58,23 @@ class AppController extends Controller
 				}
 			}
 		}
+	}
+	public function checkRoute()
+	{
+		$allow=0;
+		foreach ($this->allow as $key => $value) {
+			if($this->route == $value){
+				$allow=1;
+			}
+		}
+        if (!$this->user->isAuthorized() && !$allow) {
+        	$this->redirect('/user/login');
+        	exit();
+        }
+        if ($this->user->isAuthorized() && $allow) {
+        	$this->redirect('/');
+        	exit();
+        }
 	}
 
 }
