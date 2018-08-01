@@ -1,7 +1,7 @@
 <?php
 class Autoloader
 {
-  const debug = 1;
+  const debug = APP_ENV;
   public function __construct(){}
   public static function autoload($file)
   {
@@ -10,13 +10,13 @@ class Autoloader
     $filepath = dirname(__FILE__) . '/' . $file . '.php';
     if (file_exists($filepath))
     {
-      if(Autoloader::debug) Autoloader::StPutFile(('подключили ' .$filepath));
+      if(Autoloader::debug=='dev') Autoloader::StPutFile(('подключили ' .$filepath));
       require_once($filepath);
     }
     else
     {
       $flag = true;
-      if(Autoloader::debug) Autoloader::StPutFile(('начинаем рекурсивный поиск'));
+      if(Autoloader::debug=='dev') Autoloader::StPutFile(('начинаем рекурсивный поиск'));
       Autoloader::recursive_autoload($file, $path, $flag);
     }
   }
@@ -30,10 +30,10 @@ class Autoloader
         {
           $path2 = $path .'/' . $dir;
           $filepath = $path2 . '/' . $file . '.php';
-          if(Autoloader::debug) Autoloader::StPutFile(('ищем файл <b>' .$file .'</b> in ' .$filepath));
+          if(Autoloader::debug=='dev') Autoloader::StPutFile(('ищем файл <b>' .$file .'</b> in ' .$filepath));
           if (file_exists($filepath))
           {
-            if(Autoloader::debug) Autoloader::StPutFile(('подключили ' .$filepath ));
+            if(Autoloader::debug=='dev') Autoloader::StPutFile(('подключили ' .$filepath ));
             $flag = FALSE;
             require_once($filepath);
             break;
