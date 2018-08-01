@@ -112,16 +112,16 @@
         console.log(datastring);
         $.ajax({
             type: "POST",
-            url: "/user/login",
+            url: "/api/login",
             data: datastring,
             dataType: "json",
             success: function(data) {
                 console.log(data);
                 switch(data.success) {
-                  case "0":
+                  case 0:
                     swal("Error!", data.error, "error");
                     break;
-                  case "1":
+                  case 1:
                     swal({
                         title: 'Success!',
                         text: 'authorization successfull',
@@ -147,16 +147,16 @@
         console.log(datastring);
         $.ajax({
             type: "POST",
-            url: "/user/register",
+            url: "/api/register",
             data: datastring,
             dataType: "json",
             success: function(data) {
-                console.log(data);
+                console.log(data.success);
                 switch(data.success) {
-                  case "0":
+                  case 0:
                     swal("Error!", data.error, "error");
                     break;
-                  case "1":
+                  case 1:
                     swal({
                         title: 'Success!',
                         text: 'registration successfull',

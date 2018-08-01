@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" class="font-primary">
+  <head>
+    <title>Gravity Design | Unify - Responsive Website Template</title>
+
+    <!-- Required Meta Tags Always Come First -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Poppins:700|Oswald:300">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto%3A700%2C300">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Raleway%3A400%2C800%2C500">
+
+    <!-- CSS Global Compulsory -->
+    <link rel="stylesheet" href="/404/assets/vendor/bootstrap/bootstrap.min.css">
+
+
+    <link rel="stylesheet" href="/404/assets/css/unify.css">
+
+    <!-- Revolution Slider -->
+    <link rel="stylesheet" href="/404/assets/vendor/revolution-slider/revolution/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css">
+    <link rel="stylesheet" href="/404/assets/vendor/revolution-slider/revolution/css/settings.css">
+    <link rel="stylesheet" href="/404/assets/vendor/revolution-slider/revolution-addons/particles/css/revolution.addon.particles.css">
+  </head>
+
+  <body>
+    <main>
+        {{{content}}}
+
+    </main>
+  </body>
+
+  <!-- JS Global Compulsory -->
+  <script src="/404/assets/vendor/jquery/jquery.min.js"></script>
+  <script src="/404/assets/vendor/jquery-migrate/jquery-migrate.min.js"></script>
+  <script src="/404/assets/vendor/jquery.easing/js/jquery.easing.min.js"></script>
+  <script src="/404/assets/vendor/popper.min.js"></script>
+  <script src="/404/assets/vendor/bootstrap/bootstrap.min.js"></script>
+
+  <!-- JS Revolution Slider -->
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/jquery.themepunch.tools.min.js"></script>
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/jquery.themepunch.revolution.min.js"></script>
+
+  <script src="/404/assets/vendor/revolution-slider/revolution-addons/particles/js/revolution.addon.particles.min.js"></script>
+
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+  <script src="/404/assets/vendor/revolution-slider/revolution/js/extensions/revolution.extension.video.min.js"></script>
+
+  <!-- JS Plugins Init. -->
+  <script>
+    var tpj = jQuery;
+
+    var revapi14;
+    tpj(document).ready(function () {
+      if (tpj("#rev_slider_14_1").revolution == undefined) {
+        revslider_showDoubleJqueryError("#rev_slider_14_1");
+      } else {
+        revapi14 = tpj("#rev_slider_14_1").show().revolution({
+          sliderType: "hero",
+          jsFileLocation: "revolution/js/",
+          sliderLayout: "fullscreen",
+          dottedOverlay: "none",
+          delay: 9000,
+          particles: {
+            startSlide: "first", endSlide: "last", zIndex: "6",
+            particles: {
+              number: {value: 100}, color: {value: "#ffffff"},
+              shape: {
+                type: "circle", stroke: {width: 0, color: "#ffffff", opacity: 1},
+                image: {src: ""}
+              },
+              opacity: {
+                value: 1,
+                random: true,
+                min: 0.25,
+                anim: {enable: false, speed: 3, opacity_min: 0, sync: false}
+              },
+              size: {value: 3, random: true, min: 0.5, anim: {enable: false, speed: 40, size_min: 1, sync: false}},
+              line_linked: {enable: false, distance: 150, color: "#ffffff", opacity: 0.4, width: 1},
+              move: {
+                enable: true,
+                speed: 1,
+                direction: "top",
+                random: true,
+                min_speed: 1,
+                straight: false,
+                out_mode: "out"
+              }
+            },
+            interactivity: {
+              events: {onhover: {enable: true, mode: "bubble"}, onclick: {enable: false, mode: "repulse"}},
+              modes: {
+                grab: {distance: 400, line_linked: {opacity: 0.5}},
+                bubble: {distance: 400, size: 0, opacity: 0.01},
+                repulse: {distance: 200}
+              }
+            }
+          },
+          navigation: {},
+          responsiveLevels: [1240, 1024, 778, 480],
+          visibilityLevels: [1240, 1024, 778, 480],
+          gridwidth: [1240, 1024, 778, 480],
+          gridheight: [868, 768, 960, 720],
+          lazyType: "none",
+          parallax: {
+            type: "mouse",
+            origo: "slidercenter",
+            speed: 400,
+            levels: [1, 2, 3, 4, 5, 10, 15, 20, 25, 46, 47, 48, 49, 50, 51, 55],
+          },
+          shadow: 0,
+          spinner: "off",
+          autoHeight: "off",
+          fullScreenAutoWidth: "off",
+          fullScreenAlignForce: "off",
+          fullScreenOffsetContainer: "",
+          fullScreenOffset: "",
+          disableProgressBar: "on",
+          hideThumbsOnMobile: "off",
+          hideSliderAtLimit: 0,
+          hideCaptionAtLimit: 0,
+          hideAllCaptionAtLilmit: 0,
+          debugMode: false,
+          fallbacks: {
+            simplifyAll: "off",
+            disableFocusListener: false,
+          }
+        });
+      }
+
+      RsParticlesAddOn(revapi14);
+    });
+  </script>
+</html>

@@ -1,6 +1,6 @@
 TodoApp by ptflp
 ----------------
-Test application
+Test application writed on [MyFramewok](https://github.com/ptflp/MyFramework). Framework specialy writed to solve this task.
 
 Dev/stage environment
 ---------------------

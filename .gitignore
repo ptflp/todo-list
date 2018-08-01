@@ -5,3 +5,6 @@ app/web/package-lock.json
 sublime-gulp.log
 .sublime-gulp-tmp.js
 *.swp
+app/res/Log/Log.html
+app/web/adminer/adminer.css
+app/web/adminer/index.php
