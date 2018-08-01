@@ -53,35 +53,45 @@ use entities\User as dUser;
  	{
  		return isset($_SESSION['uid']);
  	}
- 	public function register($login,$password)
+ 	public function userSave($email,$password)
  	{
- 		if (filter_var($login, FILTER_VALIDATE_EMAIL) && strlen($password)>3) {
- 			$db=$this->db;
-	 		try {
-		 		$options = [
-				    'cost' => 10
-				];
-				$hash=password_hash($password, PASSWORD_DEFAULT,$options);
-				$user = (new dUser())
-				    ->setEmail($login)
-				    ->setPassword($hash);
-				$db->persist($user);
-				// Finally flush and execute the database transaction
-				$db->flush();
- 				$this->id=$user->getId();
- 				$this->email=$user->getEmail();
-				return true;
-	 		} catch (Doctrine\DBAL\DBALException $e) {
-	 			return false;
-	 		}
+ 		$db=$this->db;
+ 		try {
+	 		$options = [
+			    'cost' => 10
+			];
+			$hash=password_hash($password, PASSWORD_DEFAULT,$options);
+			$user = (new dUser())
+			    ->setEmail($email)
+			    ->setPassword($hash);
+			$db->persist($user);
+			// Finally flush and execute the database transaction
+			$db->flush();
+				$this->id=$user->getId();
+				$this->email=$user->getEmail();
+			return true;
+ 		} catch (Doctrine\DBAL\DBALException $e) {
+ 			return false;
+ 		}
+ 	}
+ 	public function register($email,$password)
+ 	{
+ 		if (filter_var($email, FILTER_VALIDATE_EMAIL) && strlen($password)>3) {
+ 			if (!$this->isExist($email)) {
+ 				$this->userSave($email,$password);
+ 				$this->authorize($this->id);
+ 				return true;
+ 			} else {
+ 				return false;
+ 			}
  		} else {
- 			$error['error']='попытка внедрения невалидного пользователя: '.$login;
+ 			$error['error']='попытка внедрения невалидного пользователя: '.$email;
  			die(json_encode($error,JSON_UNESCAPED_UNICODE));
  		}
  	}
- 	public function isExist($login)
+ 	public function isExist($email)
  	{
- 		$user=$this->db->getRepository('entities\User')->findOneBy(['email' => $login]);
+ 		$user=$this->db->getRepository('entities\User')->findOneBy(['email' => $email]);
  		if (is_object($user)) {
  			return true;
  		} else {

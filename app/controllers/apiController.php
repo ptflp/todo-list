@@ -100,16 +100,26 @@ class ApiController extends AppController
 	}
 	public function actionRegister()
 	{
-		$route=explode('/', $_REQUEST['__route']);
-		dump_r($route);
+		$this->checkParam(['request'=>['email','password']]);
+		$user = new User;
+		if ($user->register($_REQUEST['email'],$_REQUEST['password'])) {
+			$this->msg(1);
+		} else {
+			$this->msg(0);
+		}
 	}
 	public function actionLogin()
 	{
 		$user = new User;
 		$this->checkParam(['request'=>['email','password']]);
-		$user->login([
+		$login = $user->login([
 			'email' => $_REQUEST['email'],
 			'password' => $_REQUEST['password']
 		]);
+		if ($login) {
+			$this->msg(1);
+		} else {
+			$this->msg(0);
+		}
 	}
 }

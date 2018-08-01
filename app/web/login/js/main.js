@@ -112,7 +112,7 @@
         console.log(datastring);
         $.ajax({
             type: "POST",
-            url: "/user/login",
+            url: "/api/login",
             data: datastring,
             dataType: "json",
             success: function(data) {
@@ -147,7 +147,7 @@
         console.log(datastring);
         $.ajax({
             type: "POST",
-            url: "/user/register",
+            url: "/api/register",
             data: datastring,
             dataType: "json",
             success: function(data) {
