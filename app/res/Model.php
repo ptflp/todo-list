@@ -8,7 +8,6 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 class Model
 {
-	public $db;
 	public static function getDoctrine()
 	{
  		$paramsPath = dirname(__FILE__).'/../config/db_params.php';
