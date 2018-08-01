@@ -19,6 +19,9 @@ use entities\User as dUser;
  			$this->authorize($id);
  		}
  	}
+ 	/*
+ 	* authentication check by login, password
+ 	 */
  	public function auth($login,$password)
  	{
  		$user=$this->db->getRepository('entities\User')->findOneBy(['email' => $login]);
@@ -33,6 +36,9 @@ use entities\User as dUser;
  			return false;
  		}
  	}
+ 	/*
+ 	* authorize user by user id
+ 	 */
  	public function authorize($id=false)
  	{
  		if (!$id) {
@@ -49,6 +55,9 @@ use entities\User as dUser;
  			return false;
  		}
  	}
+ 	/*
+ 	* user authorization check by session uid key persistance
+ 	 */
  	public function isAuthorized()
  	{
  		return isset($_SESSION['uid']);
@@ -74,6 +83,9 @@ use entities\User as dUser;
  			return false;
  		}
  	}
+ 	/*
+ 	* user register by login, password
+ 	 */
  	public function register($email,$password)
  	{
  		if (filter_var($email, FILTER_VALIDATE_EMAIL) && strlen($password)>3) {
@@ -89,6 +101,9 @@ use entities\User as dUser;
  			die(json_encode($error,JSON_UNESCAPED_UNICODE));
  		}
  	}
+ 	/*
+ 	* user exist check by email
+ 	 */
  	public function isExist($email)
  	{
  		$user=$this->db->getRepository('entities\User')->findOneBy(['email' => $email]);
@@ -98,6 +113,9 @@ use entities\User as dUser;
  			return false;
  		}
  	}
+ 	/*
+ 	* user login by email, password
+ 	 */
  	public function login($req)
  	{
 		$user = $this;
@@ -109,6 +127,9 @@ use entities\User as dUser;
 			return false;
 		}
  	}
+ 	/*
+ 	* user logout function
+ 	 */
  	public function logout()
  	{
  		unset($_SESSION['uid']);

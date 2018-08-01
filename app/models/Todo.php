@@ -339,6 +339,9 @@ use \stdClass;
 			}
 		}
  	}
+ 	/*
+ 	* Gets one user todolist by todo id and user id
+ 	 */
  	public function getUserTodoBy($param=false)
  	{
 		try {
