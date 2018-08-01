@@ -3,7 +3,7 @@ use controllers\AppController;
 use res\Controller;
 use models\Todo;
 /**
- * Controller
+ * Todo controller for showing todolist by id
  */
 class TodoController extends AppController
 {

@@ -20,6 +20,9 @@ class IndexController extends AppController
 		$content['email']=$this->user->email;
 		echo $this->view->muRender('index',$content);
 	}
+	/*
+	* For image rendering, 12 images
+	 */
 	public function addCountItem($array)
 	{
 		$i=2;

@@ -3,7 +3,7 @@ use controllers\AppController;
 use entities\User;
 use models\User as AppUser;
 /**
- * Controller
+ * User controller for login register logout actions
  */
 class UserController extends AppController
 {
