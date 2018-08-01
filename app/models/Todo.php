@@ -346,8 +346,8 @@ use \stdClass;
 			$id=$param['id'];
 			$db = Model::getDoctrine();
 			$user=$db->getRepository('entities\User')->findOneBy(['id' => $uid]);
-			$todo=$this->todo;
-			$email=$this->user->email;
+			$todo=$this;
+			$email=$user->getEmail();
 			$perm=$todo->checkPermByEmail($id,$email); // Check perm for writing
 			if ($perm) {
 				$todo = $db->getRepository('entities\Todolist')->findOneBy(['id' => $id]);
