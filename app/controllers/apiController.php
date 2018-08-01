@@ -1,209 +1,113 @@
 <?php
-if (!$TodoApp->user->isAuthorized()) {
-	header('location: /user/login');
-}
-function msgError()
+use controllers\AppController;
+use res\Controller;
+use models\Todo;
+use models\User;
+/**
+ * Controller
+ */
+class ApiController extends AppController
 {
-	$msg['success']=0;
-	$msg['error']='nope';
-	echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-}
-switch (REQURL[1]) {
-	case 'create':
-		if (isset($_REQUEST['title'])) {
-			try {
-				// $user = $TodoApp->db->getRepository('entities\User')->findOneBy(['id' => $TodoApp->user->id]);
-				// $TodoApp->db->persist($user);
-				$user=$TodoApp->user->db;
-				$TodoApp->db->persist($user);
-				// Create a new todolist
-				$todo = (new entities\Todolist())
-				    ->setTitle($_REQUEST['title'])
-				    ->setTasks("[]")
-				    ->setUser($user)
-				    ->setDate(new DateTime());
-
-				// Add the todolist the to list of the User tasks. Since we used cascade={"all"}, we
-				// don't need to persist the todolist separately: it will be persisted when persisting
-				// the User
-				$user->addTodolist($todo);
-
-				// Finally flush and execute the database transaction
-				$TodoApp->db->flush();
-				$msg['success']=1;
-				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-			} catch (Doctrine\DBAL\DBALException $e) {
-				$msg['success']=0;
-				$msg['error']=$e;
-				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-			}
+	public $todo;
+	function __construct()
+	{
+		parent::__construct();
+		$this->todo = new Todo();
+	}
+	/*
+	* Creating new todo list with title
+	 */
+	public function actionCreate()
+	{
+		$this->checkParam(['request'=>['title']]);
+		$todo = $this->todo;
+		$uid = $this->user->id;
+		if ($todo->createTodo($uid,$_REQUEST['title'])) {
+			$this->msg(1);
 		} else {
-			header('location: /');
+			$this->msg(0);
 		}
-	break;
-	case 'remove':
-		if (is_numeric(REQURL[2])) {
-			try {
-				$todo=new Todo();
-				$email=$TodoApp->user->email;
-				$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
-				if ($perm==1) {
-					$user=$TodoApp->user->db;
-					$TodoApp->db->persist($user);
-					// Create a new task
-					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
-					if (is_object($todo)) {
-						// Add the task the to list of the User tasks. Since we used cascade={"all"}, we
-						// don't need to persist the task separately: it will be persisted when persisting
-						// the User
-						$user->removeTodolist($todo);
-						// Finally flush and execute the database transaction
-						$TodoApp->db->flush();
-						$msg['success']=1;
-						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-					} else {
-						msgError();
-					}
-				}
-			} catch (Doctrine\DBAL\DBALException $e) {
-				$msg['success']=0;
-				$msg['error']=$e;
-				echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-			}
+	}
+	/*
+	* remove todo list by id
+	 */
+	public function actionRemove($id=false)
+	{
+		$this->checkParam(['id'=>$id]);
+		$todo = $this->todo;
+		$uid=$this->user->id;
+		if ($todo->todoRemove($id,$uid)) {
+			$this->msg(1);
 		} else {
-			header('location: /');
+			$this->msg(0);
 		}
-	break;
-	case 'save':
-		if (is_numeric(REQURL[2])) {
-			$todo=new Todo();
-			$email=$TodoApp->user->email;
-			$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
-			if ($perm==1 || $perm==2) {
-				$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
-				if($todo){
-					$user=$todo->getUser();
-					$array=json_decode($_REQUEST['data']);
-					if (is_array($array)) {
-						$arr=[];
-						$i=0;
-						foreach ($array as $key => $value) {
-							$item = new stdClass();
-							$item->title=$value->title;
-							$item->complete=$value->complete;
-							$item->id=$value->id;
-							if($value->title && mb_strlen($value->id)== 17 && is_bool($value->complete)){
-								$arr[]=$item;
-							}
-						}
-						$json=json_encode($arr);
-						$todo->setTasks($json);
-						$TodoApp->db->merge($todo);
-						$TodoApp->db->flush();
-						echo $json;
-					} else {
-						header('location: /');
-					}
-				} else {
-					header('location: /');
-				}
-			}
+	}
+	/*
+	* Save user todo tasks by id
+	 */
+	public function actionSave($id=false)
+	{
+		$this->checkParam(['id'=>$id,'request'=>['data']]);
+		$todo = $this->todo;
+		$data = $_REQUEST['data'];
+		$uid = $this->user->id;
+		if ($todo->saveUserTasks($id,$data,$uid)) {
+			echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 		} else {
-			header('location: /');
+			$this->msg(0);
 		}
-	break;
-	case 'get':
-		if (is_numeric(REQURL[2])) {
-			try {
-				$todo=new Todo();
-				$email=$TodoApp->user->email;
-				$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
-				if ($perm) {
-					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' => REQURL[2]]);
-					if(is_object($todo)){
-						$msg['success']=1;
-						$msg['title']=$todo->getTitle();
-						$msg['data']=json_decode($todo->getTasks());
-						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-					} else {
-						msgError();
-					}
-				}
-			} catch (Doctrine\DBAL\DBALException $e) {
-				die('something went wrong');
-			}
+	}
+	/*
+	* Get user todo tasks by id
+	 */
+	public function actionGet($id=false)
+	{
+		$this->checkParam(['id'=>$id]);
+		$todo = $this->todo;
+		$uid = $this->user->id;
+		if ($todo->getUserTasks($id,$uid)) {
+			echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 		} else {
-			header('location: /');
+			$this->msg(0);
 		}
-	break;
-	case 'edit':
-		if (is_numeric(REQURL[2])) {
-			try {
-				$todo=new Todo();
-				$email=$TodoApp->user->email;
-				$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
-				if ($perm==1) {
-					$todo = $TodoApp->db->getRepository('entities\Todolist')->findOneBy(['id' =>REQURL[2]]);
-					$user=$todo->getUser();
-					if(is_object($todo) && $user->getId() == $TodoApp->user->id){
-						$todo->setTitle($_REQUEST['title']);
-						$TodoApp->db->merge($todo);
-						$TodoApp->db->flush();
-						$msg['success']=1;
-						$msg['title']=$todo->getTitle();
-						$msg['data']=json_decode($todo->getTasks());
-						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-					} else {
-					msgError();
-					}
-				} else {
-					msgError();
-				}
-
-			} catch (Doctrine\DBAL\DBALException $e) {
-				die('something went wrong'.$e);
-			}
+	}
+	/*
+	* Edit todo title by id
+	 */
+	public function actionEdit($id=false)
+	{
+		$this->checkParam(['id'=>$id,'request'=>['title']]);
+		$todo = $this->todo;
+		$title=$_REQUEST['title'];
+		$uid = $this->user->id;
+		if ($todo->editTodoTitle($id,$title,$uid)) {
+			echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 		} else {
-			header('location: /');
+			$this->msg(0);
 		}
-	break;
-	case 'test':
-		$m = new Mustache_Engine;
-		echo $m->render('Hello {{planet}}', array('planet' => 'World!'));
-	break;
-	case 'share':
-		if (is_numeric(REQURL[2])) {
-	 		if (filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL) && is_numeric($_REQUEST['permission'])) {
-	 			$permission=[2,3];
-	 			if (!in_array($_REQUEST['permission'],$permission)) {
-					header('location: /');
-	 			}
-				try {
-					$todo=new Todo();
-					$email=$TodoApp->user->email;
-					$perm=$todo->checkPermByEmail(REQURL[2],$email,$TodoApp->db); // Check perm for writing
-					if ($perm==1) {
-						if($email==$_REQUEST['email']) {
-							msgError();
-						} else {
-							$todo->setPermission(REQURL[2],$_REQUEST['email'],$_REQUEST['permission'],$TodoApp->db);
-							echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
-						}
-					} else {
-						$msg['success']=0;
-						$msg['error']='nope';
-						echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-					}
-				} catch (Doctrine\DBAL\DBALException $e) {
-					msgError();
-				}
-			}
+	}
+	/*
+	* Edit todo title by id
+	 */
+	public function actionShare($id=false)
+	{
+		$this->checkParam(['id'=>$id,'request'=>['email','permission']]);
+		$todo = $this->todo;
+		$email = $_REQUEST['email'];
+		$perm = $_REQUEST['permission'];
+		$uid = $this->user->id;
+		if ($todo->shareTodo($id,$email,$perm,$uid)) {
+			echo json_encode($todo->data,JSON_UNESCAPED_UNICODE);
 		} else {
-			msgError();
+			$this->msg(0);
 		}
-	break;
-	default:
-		if($_REQUEST['settings']) {
+	}
+	/*
+	* Frontend api url initialization
+	 */
+	public function actionSettings()
+	{
+		if(isset($_REQUEST['settings'])) {
 			$url['create']="/api/create/";
 			$url['get']="/api/get/";
 			$url['edit']="/api/edit/";
@@ -212,7 +116,37 @@ switch (REQURL[1]) {
 			$url['share']="/api/share/";
 			echo json_encode($url,JSON_UNESCAPED_UNICODE);
 		} else {
-			header('location: /404');
+			$this->notFound();
 		}
-	break;
+	}
+	/*
+	* Register user by email, password
+	 */
+	public function actionRegister()
+	{
+		$this->checkParam(['request'=>['email','password']]);
+		$user = new User;
+		if ($user->register($_REQUEST['email'],$_REQUEST['password'])) {
+			$this->msg(1);
+		} else {
+			$this->msg(0);
+		}
+	}
+	/*
+	* Login user by email, password
+	 */
+	public function actionLogin()
+	{
+		$user = new User;
+		$this->checkParam(['request'=>['email','password']]);
+		$login = $user->login([
+			'email' => $_REQUEST['email'],
+			'password' => $_REQUEST['password']
+		]);
+		if ($login) {
+			$this->msg(1);
+		} else {
+			$this->msg(0);
+		}
+	}
 }

@@ -249,7 +249,7 @@
 	        });
  		});
 		$.ajax({
-		  url: "/api/",
+		  url: "/api/settings",
 		  method: "POST",
 		  data: { settings : 1},
 		  dataType: "json",
@@ -407,7 +407,7 @@
 							.fail(function(err) {
 								swal("Oh noes!", "The AJAX request failed! " + JSON.stringify(err), "error");
 							});
-						});
+						}).catch(swal.noop);
 	                    // setTimeout(function () {
 	                    //     window.location.replace("/");
 	                    //     window.location.href = "/";

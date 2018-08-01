@@ -1,7 +1,10 @@
 {
     "require": {
+        "leeoniya/dump-r": "^2.1",
+        "mustache/mustache": "^2.12",
         "doctrine/orm": "^2.6",
-        "leeoniya/dump-r": "dev-master",
-        "mustache/mustache": "^2.12"
+        "predis/predis": "^1.1",
+        "dg/adminer-custom": "^1.15",
+        "tracy/tracy": "^2.5"
     }
 }

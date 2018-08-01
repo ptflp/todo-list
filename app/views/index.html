@@ -1,0 +1,51 @@
+<div class="inner">
+	<header>
+		<h1>Choose or create your todo list<br /> Source code at <a href="https://github.com/ptflp/todo-list">https://github.com/ptflp/todo-list</a>
+	</header>
+	<section class="tiles">
+		<article class="style2">
+			<span class="image">
+				<img src="/phantom/images/pic1.jpg" alt="" />
+			</span>
+			<a href="#" id="createTodolist">
+				<h2 style="font-size:12em;letter-spacing:0em;line-height: 0.5;">+</h2>
+				<div class="content">
+					<p>CREATE TodoList</p>
+				</div>
+			</a>
+		</article>
+		{{#todoList}}
+			<article class="style7" id="todo-{{id}}">
+				<span class="image">
+					<img src="/phantom/images/pic{{count}}.jpg" alt="" />
+				</span>
+				<a href="/todo/{{id}}">
+					<h2>{{title}}</h2>
+				</a>
+				<ul class="icons action">
+					<li><a href="#" class="icon style2 share fa-share-alt-square action-control" data-id="share-{{id}}"><span class="label">Share</span></a></li>
+					<li><a href="#" class="icon style2 edit fa-edit action-control" data-id="edit-{{id}}"><span class="label">Edit</span></a></li>
+					<li><a href="#" class="icon style2 remove fa-trash action-control" data-id="remove-{{id}}"><span class="label">Remove</span></a></li>
+				</ul>
+			</article>
+		{{/todoList}}
+	</section>
+	<header>
+		<h1>User shared tasks list</a>
+	</header>
+	<section class="tiles">
+		{{#sharedList}}
+			<article class="style7" id="todo-{{id}}">
+				<span class="image">
+					<img src="/phantom/images/pic{{count}}.jpg" alt="" />
+				</span>
+				<a href="/todo/{{id}}">
+					<h2>{{title}}</h2>
+				</a>
+				<ul class="icons action">
+					<li><a href="#" class="style2 share" style="background: #ffffffa1;"><span class="label">{{perm}}</span></a></li>
+				</ul>
+			</article>
+		{{/sharedList}}
+	</section>
+</div>
