@@ -154,7 +154,7 @@
                 console.log(data.success);
                 switch(data.success) {
                   case 0:
-                    swal("Error!", data.error, "error");
+                    swal("Error!", 'Возможно вы уже зарегистрированы', "error");
                     break;
                   case 1:
                     swal({
@@ -169,6 +169,9 @@
                         window.location.href = "/";
                     },1500);
                     break;
+                  default:
+                    swal("Error!", 'Password must be longer than 3 symbols', "error");
+                  break;
                 }
             },
             error: function() {
