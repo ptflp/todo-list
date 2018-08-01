@@ -1,43 +1,22 @@
 <?php
-use res\Controller;
+use controllers\AppController;
 use entities\User;
 use models\User as AppUser;
 /**
  * Controller
  */
-class UserController extends Controller
+class UserController extends AppController
 {
 	public $user;
-	function __construct()
-	{
-        parent::__construct();
-		session_start();
-        $this->user = new AppUser;
-	}
 	public function actionLogin($id=false)
 	{
-		if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
-			$user = $this->user;
-			$db = $this->user->db;
-			$auth=$user->auth($_REQUEST['email'],$_REQUEST['password'],$db);
-			if ($auth) {
-				$user->authorize($user->id,$db);
-				$this->msg(1);
-			} else {
-				$this->msg(0,'Неправильная пара логин пароль');
-			}
-		} else {
-			if ($this->user->isAuthorized()) {
-				header('location: /');
-			}
-			$this->view->layout='logreg';
-			echo $this->view->muRender('logreg/login',[]);
-		}
+		$this->view->layout='logreg';
+		echo $this->view->muRender('logreg/login',[]);
 	}
 	public function actionLogout()
 	{
 		$this->user->logout();
-		header('location: /user/login');
+		$this->redirect('/user/login');
 	}
 	public function actionRegister()
 	{

@@ -2,6 +2,7 @@
 use controllers\AppController;
 use res\Controller;
 use models\Todo;
+use models\User;
 /**
  * Controller
  */
@@ -96,5 +97,19 @@ class ApiController extends AppController
 		} else {
 			$this->notFound();
 		}
+	}
+	public function actionRegister()
+	{
+		$route=explode('/', $_REQUEST['__route']);
+		dump_r($route);
+	}
+	public function actionLogin()
+	{
+		$user = new User;
+		$this->checkParam(['request'=>['email','password']]);
+		$user->login([
+			'email' => $_REQUEST['email'],
+			'password' => $_REQUEST['password']
+		]);
 	}
 }

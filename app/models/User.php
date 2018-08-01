@@ -88,6 +88,17 @@ use entities\User as dUser;
  			return false;
  		}
  	}
+ 	public function login($req)
+ 	{
+		$user = $this;
+		$auth=$user->auth($req['email'],$req['password']);
+		if ($auth) {
+			$user->authorize($user->id);
+			return true;
+		} else {
+			return false;
+		}
+ 	}
  	public function logout()
  	{
  		unset($_SESSION['uid']);
