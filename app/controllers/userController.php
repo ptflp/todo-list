@@ -36,11 +36,4 @@ class UserController extends AppController
 			echo $this->view->muRender('logreg/register',[]);
 		}
 	}
-	public function msg($success,$error=false,$data=false)
-	{
-		$msg['success']=$success;
-		$msg['error']=$error;
-		$msg['data']=$data;
-		echo json_encode($msg,JSON_UNESCAPED_UNICODE);
-	}
 }
