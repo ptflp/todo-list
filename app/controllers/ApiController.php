@@ -4,7 +4,7 @@ use res\Controller;
 use models\Todo;
 use models\User;
 /**
- * Api Controller
+ * Controller
  */
 class ApiController extends AppController
 {

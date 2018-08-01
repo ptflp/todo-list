@@ -2,7 +2,7 @@
 use controllers\AppController;
 use models\Todo;
 /**
- * Index Controller
+ * Controller
  */
 class IndexController extends AppController
 {
