@@ -261,7 +261,7 @@ use \stdClass;
 							$arr[]=$item;
 						}
 					}
-					$json=json_encode($arr);
+					$json=json_encode($arr,JSON_UNESCAPED_UNICODE);
 					$todo->setTasks($json);
 					$db->merge($todo);
 					$db->flush();
