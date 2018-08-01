@@ -33,3 +33,11 @@ chmod +x init-docker.bash
 Gulp 4.0
 --------
 Install Gulp 4.0 by [link](https://gist.github.com/ptflp/f86694ea2320f792af48e691e2e5f1ff#file-install-sh)
+
+Roadmap
+-------
+Fix PSR-2 PSR-4
+Set models state to public variable data
+Normalize database tasks
+Refactor to independent methods for php-unit
+Add tests php-unit
