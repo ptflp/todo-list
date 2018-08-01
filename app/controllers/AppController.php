@@ -14,7 +14,7 @@ class AppController extends Controller
         parent::__construct();
 		session_start();
         $this->user = new User;
-        $this->allow=[ // Allow for not registered users
+        $this->allow=[ // Allow for not registered or authorized users
         				'api/register',
         				'api/login',
         				'user/login',
